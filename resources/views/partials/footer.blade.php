@@ -2,7 +2,7 @@
     <div class="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
             <a href="{{ route('home') }}" class="flex items-center gap-2 font-serif text-xl font-semibold text-brand-800">
-                <span class="flex h-9 w-9 items-center justify-center rounded-full bg-brand-600 text-sm font-bold text-white">AB</span>
+                <img src="{{ asset('images/logoAbi.jpg') }}" alt="Abigail's Braids" class="h-10 w-10 rounded-full object-cover">
                 Abigail's Braids
             </a>
             <p class="mt-4 max-w-xs text-sm text-ink-900/70">
