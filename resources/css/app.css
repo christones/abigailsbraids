@@ -1,0 +1,91 @@
+@import 'tailwindcss';
+@import 'swiper/css';
+@import 'swiper/css/navigation';
+@import 'swiper/css/pagination';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-serif: 'Playfair Display', ui-serif, Georgia, serif;
+
+    --color-brand-50: #fdf6f0;
+    --color-brand-100: #faeadb;
+    --color-brand-200: #f3d1ae;
+    --color-brand-300: #e9b077;
+    --color-brand-400: #dd8c49;
+    --color-brand-500: #c96f2e;
+    --color-brand-600: #a95524;
+    --color-brand-700: #863f1f;
+    --color-brand-800: #5f2c17;
+    --color-brand-900: #3c1c0f;
+
+    --color-ink-50: #f7f5f3;
+    --color-ink-900: #221812;
+}
+
+@layer base {
+    body {
+        @apply bg-ink-50 text-ink-900 font-sans antialiased;
+    }
+
+    h1, h2, h3, h4 {
+        @apply font-serif;
+    }
+}
+
+@layer components {
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-medium transition duration-150 ease-out;
+    }
+
+    .btn-primary {
+        @apply btn bg-brand-600 text-white shadow-sm hover:bg-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600;
+    }
+
+    .btn-secondary {
+        @apply btn bg-white text-brand-700 ring-1 ring-inset ring-brand-300 hover:bg-brand-50;
+    }
+
+    .section-title {
+        @apply text-3xl sm:text-4xl font-serif font-semibold text-ink-900;
+    }
+
+    .section-eyebrow {
+        @apply text-sm font-semibold uppercase tracking-widest text-brand-600;
+    }
+
+    .card {
+        @apply rounded-2xl bg-white shadow-sm ring-1 ring-ink-900/5;
+    }
+
+    .form-label {
+        @apply block text-sm font-medium text-ink-900 mb-1;
+    }
+
+    .form-input {
+        @apply block w-full rounded-lg border-0 bg-white px-4 py-2.5 text-ink-900 ring-1 ring-inset ring-ink-900/10 placeholder:text-ink-900/40 focus:ring-2 focus:ring-inset focus:ring-brand-500;
+    }
+
+    .form-error {
+        @apply mt-1 text-sm text-red-600;
+    }
+}
+
+/* Hero slider bullets stay visible on photographic backgrounds */
+.hero-swiper .swiper-pagination-bullet {
+    background: white;
+    opacity: 0.6;
+}
+
+.hero-swiper .swiper-pagination-bullet-active {
+    opacity: 1;
+    background: var(--color-brand-400);
+}
+
+.hero-swiper .swiper-button-next,
+.hero-swiper .swiper-button-prev {
+    color: white;
+}
