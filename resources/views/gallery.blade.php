@@ -21,18 +21,29 @@
     <section class="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
         <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             @foreach ([
-                ['Box+Braids', 'f3d1ae'],
-                ['Knotless', 'e9b077'],
-                ['Vanilles', 'dd8c49'],
-                ['Cornrows', 'c96f2e'],
-                ['Extensions+Couleur', 'a95524'],
-                ['Faux+Locs', '863f1f'],
-                ['Coiffure+Enfant', '5f2c17'],
-                ['Soin+%26+Demelage', '3c1c0f'],
-            ] as [$label, $color])
+                ['images/braids8.jpg', 'Box Braids'],
+                ['images/braids9.jpg', 'Knotless Braids'],
+                ['images/braids7.jpg', 'Vanilles / Twists'],
+                ['images/braids4.jpg', 'Cornrows'],
+                ['images/braids20.jpg', 'Extensions colorées'],
+                ['images/braids5.jpg', 'Faux Locs'],
+                ['images/braids13.jpg', 'Coiffure Enfant'],
+                ['images/braids6.jpg', 'Soin & Démêlage'],
+                ['images/braids.jpg', 'Coiffure Enfant'],
+                ['images/braids2.jpg', 'Cheveux naturels'],
+                ['images/braids3.jpg', 'Box Braids'],
+                ['images/braids10.jpg', 'Coiffure Enfant'],
+                ['images/braids11.jpg', 'Coiffure Enfant'],
+                ['images/braids12.jpg', 'Coiffure Enfant'],
+                ['images/braids14.jpg', 'Coiffure Enfant'],
+                ['images/braids15.jpg', 'Vanilles / Twists'],
+                ['images/braids17.jpg', 'Coiffure Enfant'],
+                ['images/braids19.jpg', 'Cornrows'],
+                ['images/braids21.jpg', 'Extensions colorées'],
+            ] as [$image, $label])
                 <img
-                    src="https://placehold.co/500x600/{{ $color }}/fff?text={{ $label }}"
-                    alt="{{ str_replace('+', ' ', $label) }}"
+                    src="{{ asset($image) }}"
+                    alt="{{ $label }}"
                     class="aspect-[4/5] w-full rounded-xl object-cover shadow-sm"
                     loading="lazy"
                 >

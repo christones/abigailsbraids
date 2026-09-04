@@ -10,13 +10,13 @@
         <div class="hero-swiper swiper relative h-[70vh] min-h-[480px] w-full overflow-hidden">
             <div class="swiper-wrapper">
                 @foreach ([
-                    ['title' => 'Sublimez vos cheveux', 'subtitle' => 'Tresses et nattes africaines réalisées avec soin, à Strasbourg', 'color' => 'c96f2e'],
-                    ['title' => 'Box Braids & Knotless', 'subtitle' => 'Un style protecteur, élégant et durable', 'color' => 'a95524'],
-                    ['title' => 'Pour toutes les femmes', 'subtitle' => 'Chaque texture, chaque longueur, chaque envie mérite un beau résultat', 'color' => '863f1f'],
+                    ['title' => 'Sublimez vos cheveux', 'subtitle' => 'Tresses et nattes africaines réalisées avec soin, à Strasbourg', 'image' => 'images/braids18.jpg'],
+                    ['title' => 'Box Braids & Knotless', 'subtitle' => 'Un style protecteur, élégant et durable', 'image' => 'images/braids1.jpg'],
+                    ['title' => 'Pour toutes les femmes', 'subtitle' => 'Chaque texture, chaque longueur, chaque envie mérite un beau résultat', 'image' => 'images/braids22.jpg'],
                 ] as $slide)
                     <div class="swiper-slide relative flex items-center justify-center">
                         <img
-                            src="https://placehold.co/1920x1080/{{ $slide['color'] }}/fdf6f0?text=Abigail%27s+Braids&font=playfair-display"
+                            src="{{ asset($slide['image']) }}"
                             alt=""
                             class="absolute inset-0 h-full w-full object-cover"
                             loading="eager"
@@ -69,8 +69,8 @@
                 <a href="{{ route('about') }}" class="btn-secondary mt-8 inline-flex">En savoir plus</a>
             </div>
             <div class="grid grid-cols-2 gap-4">
-                <img src="https://placehold.co/400x520/f3d1ae/5f2c17?text=Vanilles" alt="Vanilles" class="col-span-1 mt-8 rounded-2xl shadow-sm">
-                <img src="https://placehold.co/400x520/e9b077/3c1c0f?text=Box+Braids" alt="Box braids" class="col-span-1 rounded-2xl shadow-sm">
+                <img src="{{ asset('images/braids7.jpg') }}" alt="Vanilles" class="col-span-1 mt-8 rounded-2xl shadow-sm">
+                <img src="{{ asset('images/braids8.jpg') }}" alt="Box braids" class="col-span-1 rounded-2xl shadow-sm">
             </div>
         </div>
     </section>
@@ -87,7 +87,7 @@
                 @forelse ($services->take(4) as $service)
                     <div class="card flex flex-col overflow-hidden">
                         <img
-                            src="https://placehold.co/480x360/faeadb/863f1f?text={{ urlencode($service->name) }}"
+                            src="{{ $service->image_path ? asset($service->image_path) : 'https://placehold.co/480x360/faeadb/863f1f?text='.urlencode($service->name) }}"
                             alt="{{ $service->name }}"
                             class="h-40 w-full object-cover"
                         >
@@ -127,11 +127,18 @@
 
             <div class="gallery-swiper swiper mt-10 !overflow-hidden">
                 <div class="swiper-wrapper">
-                    @foreach (['Box+Braids', 'Knotless', 'Vanilles', 'Cornrows', 'Faux+Locs', 'Coiffure+Enfant'] as $i => $label)
+                    @foreach ([
+                        ['images/braids8.jpg', 'Box Braids'],
+                        ['images/braids9.jpg', 'Knotless'],
+                        ['images/braids7.jpg', 'Vanilles'],
+                        ['images/braids4.jpg', 'Cornrows'],
+                        ['images/braids5.jpg', 'Faux Locs'],
+                        ['images/braids13.jpg', 'Coiffure Enfant'],
+                    ] as [$image, $label])
                         <div class="swiper-slide">
                             <img
-                                src="https://placehold.co/500x600/{{ ['f3d1ae','e9b077','dd8c49','c96f2e','a95524','863f1f'][$i % 6] }}/fff?text={{ $label }}"
-                                alt="{{ str_replace('+', ' ', $label) }}"
+                                src="{{ asset($image) }}"
+                                alt="{{ $label }}"
                                 class="h-80 w-full rounded-2xl object-cover"
                             >
                         </div>

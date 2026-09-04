@@ -21,7 +21,7 @@
             @forelse ($services as $service)
                 <div class="card flex flex-col overflow-hidden">
                     <img
-                        src="https://placehold.co/600x400/faeadb/863f1f?text={{ urlencode($service->name) }}"
+                        src="{{ $service->image_path ? asset($service->image_path) : 'https://placehold.co/600x400/faeadb/863f1f?text='.urlencode($service->name) }}"
                         alt="{{ $service->name }}"
                         class="h-48 w-full object-cover"
                     >
