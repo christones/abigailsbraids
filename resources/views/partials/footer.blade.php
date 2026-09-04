@@ -45,7 +45,7 @@
         <p>
             &copy; {{ now()->year }} Abigail's Braids — Tous droits réservés.
             <span class="text-ink-900/30">·</span>
-            Site par <a href="https://techovasolutions.ca" target="_blank" rel="noopener noreferrer" class="text-ink-900/50 hover:text-brand-700">TechOva Solutions</a>
+            Designed by <a href="https://techovasolutions.ca" target="_blank" rel="noopener noreferrer" class="text-ink-900/50 hover:text-brand-700">TechOva</a>
         </p>
     </div>
 </footer>
