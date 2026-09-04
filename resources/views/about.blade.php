@@ -20,7 +20,7 @@
                     des box braids, des knotless, des vanilles ou une simple séance de soin.
                 </p>
             </div>
-            <img src="https://placehold.co/700x600/e9b077/3c1c0f?text=Abigail%27s+Braids" alt="Le salon Abigail's Braids" class="rounded-2xl shadow-sm">
+            <img src="{{ asset('images/braids16.jpg') }}" alt="Réalisation Abigail's Braids" class="rounded-2xl shadow-sm">
         </div>
     </section>
 
