@@ -7,6 +7,9 @@
     <meta name="description" content="@yield('description', "Abigail's Braids, salon de tresses et nattes africaines à Strasbourg. Box braids, knotless, vanilles, cornrows... Réservez votre rendez-vous en ligne.")">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <link rel="icon" href="{{ asset('images/logoAbi.jpg') }}" type="image/jpeg">
+    <link rel="apple-touch-icon" href="{{ asset('images/logoAbi.jpg') }}">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">

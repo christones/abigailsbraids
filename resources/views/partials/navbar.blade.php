@@ -11,7 +11,7 @@
 <header class="sticky top-0 z-50 border-b border-ink-900/5 bg-ink-50/90 backdrop-blur">
     <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8" aria-label="Navigation principale">
         <a href="{{ route('home') }}" class="flex items-center gap-2 font-serif text-xl font-semibold text-brand-800">
-            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-brand-600 text-sm font-bold text-white">AB</span>
+            <img src="{{ asset('images/logoAbi.jpg') }}" alt="Abigail's Braids" class="h-10 w-10 rounded-full object-cover">
             Abigail's Braids
         </a>
 
