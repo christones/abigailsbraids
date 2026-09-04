@@ -42,10 +42,10 @@
     </div>
 
     <div class="border-t border-ink-900/5 py-6 text-center text-xs text-ink-900/50">
-        <p>&copy; {{ now()->year }} Abigail's Braids — Tous droits réservés.</p>
-        <p class="mt-1">
-            Site présenté par
-            <a href="https://techovasolutions.ca" target="_blank" rel="noopener noreferrer" class="font-semibold hover:text-brand-700">TechOva Solutions</a>
+        <p>
+            &copy; {{ now()->year }} Abigail's Braids — Tous droits réservés.
+            <span class="text-ink-900/30">·</span>
+            Site par <a href="https://techovasolutions.ca" target="_blank" rel="noopener noreferrer" class="text-ink-900/50 hover:text-brand-700">TechOva Solutions</a>
         </p>
     </div>
 </footer>
