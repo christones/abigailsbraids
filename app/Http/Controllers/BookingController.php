@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreBookingRequest;
+use App\Mail\NewBookingNotification;
 use App\Models\Booking;
 use App\Models\Service;
 use App\Support\BookingSlots;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class BookingController extends Controller
@@ -33,6 +36,16 @@ class BookingController extends Controller
     public function store(StoreBookingRequest $request): \Illuminate\Http\RedirectResponse
     {
         $booking = Booking::create($request->validated());
+
+        try {
+            Mail::to(config('salon.notification_email'))
+                ->send(new NewBookingNotification($booking));
+        } catch (\Throwable $e) {
+            Log::error('Failed to send new booking notification email.', [
+                'booking_id' => $booking->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         return redirect()
             ->route('booking.confirmation', $booking)
