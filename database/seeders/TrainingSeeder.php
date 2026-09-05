@@ -20,6 +20,7 @@ class TrainingSeeder extends Seeder
                 'level' => 'Débutant',
                 'duration_minutes' => 360,
                 'price_from' => 150.00,
+                'image_path' => 'images/training2.jpg',
             ],
             [
                 'name' => 'Perfectionnement Box Braids & Knotless',
@@ -27,6 +28,7 @@ class TrainingSeeder extends Seeder
                 'level' => 'Intermédiaire',
                 'duration_minutes' => 720,
                 'price_from' => 280.00,
+                'image_path' => 'images/training1.jpg',
             ],
             [
                 'name' => 'Formation professionnelle complète',
@@ -34,6 +36,7 @@ class TrainingSeeder extends Seeder
                 'level' => 'Tous niveaux',
                 'duration_minutes' => 1800,
                 'price_from' => 650.00,
+                'image_path' => 'images/trainer.jpg',
             ],
         ];
 
@@ -46,6 +49,7 @@ class TrainingSeeder extends Seeder
                     'level' => $training['level'],
                     'duration_minutes' => $training['duration_minutes'],
                     'price_from' => $training['price_from'],
+                    'image_path' => $training['image_path'],
                     'sort_order' => $index,
                     'is_active' => true,
                 ]
