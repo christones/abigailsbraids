@@ -2,9 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Mail\NewTrainingRegistrationNotification;
+use App\Mail\TrainingRegistrationConfirmation;
 use App\Models\Training;
 use App\Models\TrainingRegistration;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class TrainingTest extends TestCase
@@ -57,6 +60,33 @@ class TrainingTest extends TestCase
         $registration = TrainingRegistration::firstWhere('candidate_email', 'fatou@example.com');
 
         $response->assertRedirect(route('training.confirmation', $registration));
+    }
+
+    public function test_submitting_a_registration_emails_the_salon_and_the_candidate(): void
+    {
+        Mail::fake();
+
+        $training = Training::factory()->create();
+
+        $this->post(route('training.store'), [
+            'training_id' => $training->id,
+            'candidate_name' => 'Fatoumata Diallo',
+            'candidate_email' => 'fatou@example.com',
+            'candidate_phone' => '0600000000',
+            'preferred_date' => now()->addWeek()->toDateString(),
+        ]);
+
+        $registration = TrainingRegistration::firstWhere('candidate_email', 'fatou@example.com');
+
+        Mail::assertSent(NewTrainingRegistrationNotification::class, function (NewTrainingRegistrationNotification $mail) use ($registration) {
+            return $mail->registration->is($registration)
+                && $mail->hasTo(config('salon.notification_email'));
+        });
+
+        Mail::assertSent(TrainingRegistrationConfirmation::class, function (TrainingRegistrationConfirmation $mail) use ($registration) {
+            return $mail->registration->is($registration)
+                && $mail->hasTo('fatou@example.com');
+        });
     }
 
     public function test_registration_requires_a_valid_training_and_date(): void

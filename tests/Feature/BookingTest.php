@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Mail\BookingConfirmation;
 use App\Mail\NewBookingNotification;
 use App\Models\Booking;
 use App\Models\Service;
@@ -72,6 +73,11 @@ class BookingTest extends TestCase
         Mail::assertSent(NewBookingNotification::class, function (NewBookingNotification $mail) use ($booking) {
             return $mail->booking->is($booking)
                 && $mail->hasTo(config('salon.notification_email'));
+        });
+
+        Mail::assertSent(BookingConfirmation::class, function (BookingConfirmation $mail) use ($booking) {
+            return $mail->booking->is($booking)
+                && $mail->hasTo('fatou@example.com');
         });
     }
 

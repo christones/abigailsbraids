@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTrainingRegistrationRequest;
+use App\Mail\NewTrainingRegistrationNotification;
+use App\Mail\TrainingRegistrationConfirmation;
 use App\Models\Training;
 use App\Models\TrainingRegistration;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class TrainingRegistrationController extends Controller
@@ -33,6 +37,8 @@ class TrainingRegistrationController extends Controller
     {
         $registration = TrainingRegistration::create($request->validated());
 
+        $this->sendNotifications($registration);
+
         return redirect()
             ->route('training.confirmation', $registration)
             ->with('success', true);
@@ -48,5 +54,31 @@ class TrainingRegistrationController extends Controller
         return view('trainings.registration.confirmation', [
             'registration' => $trainingRegistration,
         ]);
+    }
+
+    /**
+     * Email the salon and the candidate about the new registration.
+     */
+    private function sendNotifications(TrainingRegistration $registration): void
+    {
+        try {
+            Mail::to(config('salon.notification_email'))
+                ->send(new NewTrainingRegistrationNotification($registration));
+        } catch (\Throwable $e) {
+            Log::error('Failed to send new training registration notification email.', [
+                'registration_id' => $registration->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            Mail::to($registration->candidate_email)
+                ->send(new TrainingRegistrationConfirmation($registration));
+        } catch (\Throwable $e) {
+            Log::error('Failed to send training registration confirmation email to candidate.', [
+                'registration_id' => $registration->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 }
