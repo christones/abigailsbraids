@@ -112,7 +112,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const showTip = (i) => {
             tipIndex = (i + slides.length) % slides.length;
-            slides.forEach((slide, idx) => slide.classList.toggle('hidden', idx !== tipIndex));
+            slides.forEach((slide, idx) => {
+                const isActive = idx === tipIndex;
+                slide.classList.toggle('hidden', !isActive);
+                if (slide.tagName !== 'IMG') {
+                    slide.classList.toggle('flex', isActive);
+                }
+            });
             dots.forEach((dot, idx) => {
                 dot.classList.toggle('bg-brand-600', idx === tipIndex);
                 dot.classList.toggle('bg-ink-900/20', idx !== tipIndex);

@@ -3,6 +3,7 @@
         ['image' => 'images/actu3.jpg', 'alt' => "Une bonne coiffure améliore la journée"],
         ['image' => 'images/actu4.jpg', 'alt' => "Pourquoi protéger ses cheveux la nuit avec un bonnet en satin"],
     ];
+    $totalSlides = count($tips) + 1;
 @endphp
 
 <div data-tips-modal class="fixed inset-0 z-[60] hidden items-center justify-center bg-ink-900/70 p-4 backdrop-blur-sm">
@@ -25,6 +26,20 @@
                         class="w-full {{ $i === 0 ? '' : 'hidden' }}"
                     >
                 @endforeach
+
+                {{-- Always the last slide: an invitation to book --}}
+                <div data-tips-slide class="hidden aspect-[4/5] w-full flex-col items-center justify-center gap-4 bg-gradient-to-br from-brand-600 to-rose-600 p-8 text-center text-white">
+                    <span class="flex h-14 w-14 items-center justify-center rounded-full bg-white/15">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                        </svg>
+                    </span>
+                    <h3 class="font-serif text-2xl font-semibold">Envie de tester ce look ?</h3>
+                    <p class="text-white/90">Réservez votre rendez-vous en ligne en quelques clics, pour toutes les femmes.</p>
+                    <a href="{{ route('booking.create') }}" class="btn-secondary bg-white text-brand-700 hover:bg-brand-50">
+                        Réserver maintenant
+                    </a>
+                </div>
             </div>
 
             <div class="flex items-center justify-between p-4">
@@ -35,9 +50,9 @@
                 </button>
 
                 <div class="flex gap-1.5">
-                    @foreach ($tips as $i => $tip)
+                    @for ($i = 0; $i < $totalSlides; $i++)
                         <span data-tips-dot class="h-1.5 w-1.5 rounded-full {{ $i === 0 ? 'bg-brand-600' : 'bg-ink-900/20' }}"></span>
-                    @endforeach
+                    @endfor
                 </div>
 
                 <button type="button" data-tips-next aria-label="Conseil suivant" class="btn-secondary px-3 py-2 text-sm">
