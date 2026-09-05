@@ -34,8 +34,8 @@
             <h3 class="text-sm font-semibold uppercase tracking-wide text-ink-900">Nous trouver</h3>
             <ul class="mt-4 space-y-2 text-sm text-ink-900/70">
                 <li>Strasbourg, France</li>
-                <li><a href="tel:+33600000000" class="hover:text-brand-700">+33 6 00 00 00 00</a></li>
-                <li><a href="mailto:contact@abigailsbraids.fr" class="hover:text-brand-700">contact@abigailsbraids.fr</a></li>
+                <li><a href="tel:+33650991931" class="hover:text-brand-700">+33 6 50 99 19 31</a></li>
+                <li><a href="mailto:contact@abigailsbraids.com" class="hover:text-brand-700">contact@abigailsbraids.com</a></li>
                 <li class="pt-2">Mardi – Samedi : 9h – 18h</li>
                 <li>Dimanche &amp; Lundi : fermé</li>
             </ul>

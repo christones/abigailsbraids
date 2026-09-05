@@ -20,11 +20,11 @@
                     </div>
                     <div class="flex items-start gap-3">
                         <dt class="w-24 flex-none font-semibold text-ink-900">Téléphone</dt>
-                        <dd><a href="tel:+33600000000" class="hover:text-brand-700">+33 6 00 00 00 00</a></dd>
+                        <dd><a href="tel:+33650991931" class="hover:text-brand-700">+33 6 50 99 19 31</a></dd>
                     </div>
                     <div class="flex items-start gap-3">
                         <dt class="w-24 flex-none font-semibold text-ink-900">E-mail</dt>
-                        <dd><a href="mailto:contact@abigailsbraids.fr" class="hover:text-brand-700">contact@abigailsbraids.fr</a></dd>
+                        <dd><a href="mailto:contact@abigailsbraids.com" class="hover:text-brand-700">contact@abigailsbraids.com</a></dd>
                     </div>
                     <div class="flex items-start gap-3">
                         <dt class="w-24 flex-none font-semibold text-ink-900">Horaires</dt>
