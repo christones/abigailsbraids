@@ -102,4 +102,50 @@ document.addEventListener('DOMContentLoaded', () => {
             );
         });
     }
+
+    // "Conseil du jour" popup: shown once per browser session
+    const tipsModal = document.querySelector('[data-tips-modal]');
+    if (tipsModal) {
+        const slides = tipsModal.querySelectorAll('[data-tips-slide]');
+        const dots = tipsModal.querySelectorAll('[data-tips-dot]');
+        let tipIndex = 0;
+
+        const showTip = (i) => {
+            tipIndex = (i + slides.length) % slides.length;
+            slides.forEach((slide, idx) => slide.classList.toggle('hidden', idx !== tipIndex));
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle('bg-brand-600', idx === tipIndex);
+                dot.classList.toggle('bg-ink-900/20', idx !== tipIndex);
+            });
+        };
+
+        const openTips = () => {
+            tipsModal.classList.remove('hidden');
+            tipsModal.classList.add('flex');
+        };
+
+        const closeTips = () => {
+            tipsModal.classList.add('hidden');
+            tipsModal.classList.remove('flex');
+        };
+
+        tipsModal.querySelector('[data-tips-prev]').addEventListener('click', () => showTip(tipIndex - 1));
+        tipsModal.querySelector('[data-tips-next]').addEventListener('click', () => showTip(tipIndex + 1));
+        tipsModal.querySelector('[data-tips-close]').addEventListener('click', closeTips);
+        tipsModal.addEventListener('click', (event) => {
+            if (event.target === tipsModal) closeTips();
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeTips();
+        });
+
+        try {
+            if (!sessionStorage.getItem('tipsModalShown')) {
+                setTimeout(openTips, 1500);
+                sessionStorage.setItem('tipsModalShown', '1');
+            }
+        } catch (e) {
+            // Storage unavailable (private browsing, etc.) -- skip the auto-popup.
+        }
+    }
 });

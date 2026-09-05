@@ -33,5 +33,6 @@
     </main>
 
     @include('partials.footer')
+    @include('partials.tips-modal')
 </body>
 </html>
