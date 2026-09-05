@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreBookingRequest;
+use App\Mail\BookingConfirmation;
 use App\Mail\NewBookingNotification;
 use App\Models\Booking;
 use App\Models\Service;
@@ -37,15 +38,7 @@ class BookingController extends Controller
     {
         $booking = Booking::create($request->validated());
 
-        try {
-            Mail::to(config('salon.notification_email'))
-                ->send(new NewBookingNotification($booking));
-        } catch (\Throwable $e) {
-            Log::error('Failed to send new booking notification email.', [
-                'booking_id' => $booking->id,
-                'error' => $e->getMessage(),
-            ]);
-        }
+        $this->sendNotifications($booking);
 
         return redirect()
             ->route('booking.confirmation', $booking)
@@ -62,5 +55,31 @@ class BookingController extends Controller
         return view('booking.confirmation', [
             'booking' => $booking,
         ]);
+    }
+
+    /**
+     * Email the salon and the client about the new booking.
+     */
+    private function sendNotifications(Booking $booking): void
+    {
+        try {
+            Mail::to(config('salon.notification_email'))
+                ->send(new NewBookingNotification($booking));
+        } catch (\Throwable $e) {
+            Log::error('Failed to send new booking notification email.', [
+                'booking_id' => $booking->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            Mail::to($booking->client_email)
+                ->send(new BookingConfirmation($booking));
+        } catch (\Throwable $e) {
+            Log::error('Failed to send booking confirmation email to client.', [
+                'booking_id' => $booking->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 }

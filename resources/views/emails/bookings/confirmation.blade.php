@@ -1,20 +1,21 @@
 @extends('emails.layout')
 
-@section('subject', 'Nouvelle demande de réservation')
-@section('footer_note', "Cet e-mail a été généré automatiquement suite à une demande de réservation en ligne.")
+@section('subject', 'Votre demande de rendez-vous')
+@section('footer_note', "Vous recevez cet e-mail car vous avez soumis une demande de réservation sur notre site.")
 
 @section('content')
     {{-- Title --}}
     <tr>
         <td style="padding:32px 32px 8px;">
             <p style="margin:0; color:#a95524; font-size:12px; font-weight:bold; text-transform:uppercase; letter-spacing:1.5px;">
-                Nouvelle demande
+                Demande bien reçue
             </p>
             <h1 style="margin:6px 0 0; color:#221812; font-size:24px;">
-                Réservation reçue
+                Merci {{ $booking->client_name }} !
             </h1>
             <p style="margin:12px 0 0; color:#5f2c17; font-size:14px; line-height:1.6;">
-                {{ $booking->client_name }} vient de demander un rendez-vous. Voici le récapitulatif :
+                Votre demande de rendez-vous a bien été enregistrée. Le salon vous contactera prochainement par
+                téléphone ou e-mail pour confirmer votre créneau.
             </p>
         </td>
     </tr>
@@ -38,30 +39,10 @@
                                 <td style="padding:6px 0; color:#5f2c17; vertical-align:top;">Créneau</td>
                                 <td style="padding:6px 0; font-weight:bold;">{{ $booking->preferred_time }}</td>
                             </tr>
-                            @if ($booking->hair_length)
-                                <tr>
-                                    <td style="padding:6px 0; color:#5f2c17; vertical-align:top;">Longueur de cheveux</td>
-                                    <td style="padding:6px 0; font-weight:bold;">{{ $booking->hair_length }}</td>
-                                </tr>
-                            @endif
                             <tr>
-                                <td style="padding:6px 0; color:#5f2c17; vertical-align:top;">Cliente</td>
-                                <td style="padding:6px 0; font-weight:bold;">{{ $booking->client_name }}</td>
+                                <td style="padding:6px 0; color:#5f2c17; vertical-align:top;">Statut</td>
+                                <td style="padding:6px 0; font-weight:bold;">{{ \App\Models\Booking::statusLabels()[$booking->status] ?? $booking->status }}</td>
                             </tr>
-                            <tr>
-                                <td style="padding:6px 0; color:#5f2c17; vertical-align:top;">Téléphone</td>
-                                <td style="padding:6px 0;"><a href="tel:{{ $booking->client_phone }}" style="color:#a95524; text-decoration:none; font-weight:bold;">{{ $booking->client_phone }}</a></td>
-                            </tr>
-                            <tr>
-                                <td style="padding:6px 0; color:#5f2c17; vertical-align:top;">E-mail</td>
-                                <td style="padding:6px 0;"><a href="mailto:{{ $booking->client_email }}" style="color:#a95524; text-decoration:none; font-weight:bold;">{{ $booking->client_email }}</a></td>
-                            </tr>
-                            @if ($booking->notes)
-                                <tr>
-                                    <td style="padding:6px 0; color:#5f2c17; vertical-align:top;">Message</td>
-                                    <td style="padding:6px 0;">{{ $booking->notes }}</td>
-                                </tr>
-                            @endif
                         </table>
                     </td>
                 </tr>
@@ -69,14 +50,13 @@
         </td>
     </tr>
 
-    {{-- CTA --}}
     <tr>
         <td style="padding:8px 32px 32px; text-align:center;">
             <a
-                href="{{ route('admin.dashboard') }}"
+                href="{{ route('services.index') }}"
                 style="display:inline-block; background-color:#a95524; color:#ffffff; text-decoration:none; font-family:Arial, sans-serif; font-size:14px; font-weight:bold; padding:14px 28px; border-radius:999px;"
             >
-                Voir dans l'espace salon
+                Voir nos prestations
             </a>
         </td>
     </tr>
