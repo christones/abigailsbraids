@@ -40,6 +40,8 @@
                 ['images/braids17.jpg', 'Coiffure Enfant'],
                 ['images/braids19.jpg', 'Cornrows'],
                 ['images/braids21.jpg', 'Extensions colorées'],
+                ['images/braids23.jpg', 'Extensions colorées'],
+                ['images/braids24.jpg', 'Extensions colorées'],
             ] as [$image, $label])
                 <img
                     src="{{ asset($image) }}"
