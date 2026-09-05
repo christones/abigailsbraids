@@ -1,5 +1,7 @@
 import Swiper from 'swiper';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+import flatpickr from 'flatpickr';
+import { French } from 'flatpickr/dist/l10n/fr.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     // Hero slider on the homepage
@@ -70,6 +72,21 @@ document.addEventListener('DOMContentLoaded', () => {
             breakpoints: {
                 768: { slidesPerView: 2 },
             },
+        });
+    }
+
+    // Booking date picker: closed Sundays (0) and Mondays (1), earliest tomorrow
+    const dateInput = document.querySelector('#preferred_date');
+    if (dateInput) {
+        flatpickr(dateInput, {
+            locale: French,
+            dateFormat: 'Y-m-d',
+            altInput: true,
+            altFormat: 'j F Y',
+            altInputClass: 'form-input',
+            minDate: new Date().fp_incr(1),
+            disable: [(date) => date.getDay() === 0 || date.getDay() === 1],
+            disableMobile: true,
         });
     }
 
