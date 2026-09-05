@@ -131,10 +131,10 @@
                 <div>
                     <span class="form-label">Créneau horaire</span>
                     <div class="mt-1 grid grid-cols-3 gap-2 sm:grid-cols-6">
-                        @foreach ($slots as $slot)
+                        @foreach ($slots as $timeSlot)
                             <label class="cursor-pointer rounded-lg border border-ink-900/10 bg-white px-2 py-2.5 text-center text-sm font-medium text-ink-900/80 transition has-[:checked]:border-brand-600 has-[:checked]:bg-brand-600 has-[:checked]:text-white has-[:checked]:shadow-sm hover:border-brand-300">
-                                <input type="radio" name="preferred_time" value="{{ $slot }}" class="sr-only" @checked(old('preferred_time') === $slot)>
-                                {{ $slot }}
+                                <input type="radio" name="preferred_time" value="{{ $timeSlot }}" class="sr-only" @checked(old('preferred_time') === $timeSlot)>
+                                {{ $timeSlot }}
                             </label>
                         @endforeach
                     </div>
