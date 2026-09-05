@@ -2,6 +2,7 @@
     $navLinks = [
         'home' => 'Accueil',
         'services.index' => 'Prestations',
+        'trainings.index' => 'Formations',
         'gallery' => 'Galerie',
         'about' => 'À propos',
         'contact' => 'Contact',

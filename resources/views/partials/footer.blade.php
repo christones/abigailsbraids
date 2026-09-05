@@ -22,6 +22,7 @@
             <h3 class="text-sm font-semibold uppercase tracking-wide text-ink-900">Navigation</h3>
             <ul class="mt-4 space-y-2 text-sm text-ink-900/70">
                 <li><a href="{{ route('services.index') }}" class="hover:text-brand-700">Nos prestations</a></li>
+                <li><a href="{{ route('trainings.index') }}" class="hover:text-brand-700">Nos formations</a></li>
                 <li><a href="{{ route('gallery') }}" class="hover:text-brand-700">Galerie</a></li>
                 <li><a href="{{ route('about') }}" class="hover:text-brand-700">À propos</a></li>
                 <li><a href="{{ route('booking.create') }}" class="hover:text-brand-700">Prendre rendez-vous</a></li>

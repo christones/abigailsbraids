@@ -22,7 +22,7 @@ class HomePageTest extends TestCase
 
     public function test_public_pages_are_reachable(): void
     {
-        foreach (['services.index', 'gallery', 'about', 'contact'] as $routeName) {
+        foreach (['services.index', 'trainings.index', 'gallery', 'about', 'contact'] as $routeName) {
             $this->get(route($routeName))->assertOk();
         }
     }
