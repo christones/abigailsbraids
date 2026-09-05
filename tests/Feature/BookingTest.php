@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Mail\NewBookingNotification;
 use App\Models\Booking;
 use App\Models\Service;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class BookingTest extends TestCase
@@ -48,6 +50,29 @@ class BookingTest extends TestCase
         $booking = Booking::firstWhere('client_email', 'fatou@example.com');
 
         $response->assertRedirect(route('booking.confirmation', $booking));
+    }
+
+    public function test_submitting_a_booking_emails_the_salon(): void
+    {
+        Mail::fake();
+
+        $service = Service::factory()->create();
+
+        $this->post(route('booking.store'), [
+            'service_id' => $service->id,
+            'client_name' => 'Fatoumata Diallo',
+            'client_email' => 'fatou@example.com',
+            'client_phone' => '0600000000',
+            'preferred_date' => now()->addWeek()->toDateString(),
+            'preferred_time' => '10:30',
+        ]);
+
+        $booking = Booking::firstWhere('client_email', 'fatou@example.com');
+
+        Mail::assertSent(NewBookingNotification::class, function (NewBookingNotification $mail) use ($booking) {
+            return $mail->booking->is($booking)
+                && $mail->hasTo(config('salon.notification_email'));
+        });
     }
 
     public function test_booking_requires_a_valid_service_and_date(): void
