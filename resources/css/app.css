@@ -2,6 +2,7 @@
 @import 'swiper/css';
 @import 'swiper/css/navigation';
 @import 'swiper/css/pagination';
+@import 'flatpickr/dist/flatpickr.min.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -24,6 +25,22 @@
 
     --color-ink-50: #f7f5f3;
     --color-ink-900: #221812;
+
+    --color-gold-100: #fbf1d9;
+    --color-gold-200: #f2ddaa;
+    --color-gold-300: #eecb6b;
+    --color-gold-400: #e0b23e;
+    --color-gold-500: #c8952a;
+    --color-gold-600: #a8781e;
+
+    --color-rose-50: #fdf1f5;
+    --color-rose-100: #fbe1ea;
+    --color-rose-200: #f4bdd3;
+    --color-rose-300: #ea94b6;
+    --color-rose-400: #e07198;
+    --color-rose-500: #cb4c78;
+    --color-rose-600: #a83660;
+    --color-rose-900: #3c1626;
 }
 
 @layer base {
@@ -53,8 +70,32 @@
         @apply text-sm font-semibold uppercase tracking-widest text-brand-600;
     }
 
+    .section-eyebrow-gold {
+        @apply text-sm font-semibold uppercase tracking-widest text-gold-400;
+    }
+
+    .section-eyebrow-rose {
+        @apply text-sm font-semibold uppercase tracking-widest text-rose-500;
+    }
+
     .card {
-        @apply rounded-2xl bg-white shadow-sm ring-1 ring-ink-900/5;
+        @apply rounded-2xl bg-white shadow-sm ring-1 ring-ink-900/5 transition duration-200 ease-out;
+    }
+
+    .card-hover {
+        @apply hover:-translate-y-1 hover:shadow-lg hover:ring-brand-200;
+    }
+
+    .badge-gold {
+        @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide shadow-sm bg-gold-400 text-brand-900;
+    }
+
+    .badge-rose {
+        @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide shadow-sm bg-rose-500 text-white;
+    }
+
+    .stars-gold {
+        @apply text-gold-400;
     }
 
     .form-label {
@@ -78,10 +119,43 @@
 
 .hero-swiper .swiper-pagination-bullet-active {
     opacity: 1;
-    background: var(--color-brand-400);
+    background: var(--color-gold-400);
 }
 
 .hero-swiper .swiper-button-next,
 .hero-swiper .swiper-button-prev {
     color: white;
+}
+
+/* Flatpickr calendar, themed to match the site */
+.flatpickr-calendar {
+    font-family: var(--font-sans);
+    border-radius: 1rem;
+    box-shadow: 0 20px 40px -12px rgb(34 24 18 / 0.18);
+    border: 1px solid color-mix(in srgb, var(--color-ink-900) 8%, transparent);
+}
+
+.flatpickr-months .flatpickr-month,
+.flatpickr-current-month .flatpickr-monthDropdown-months,
+.flatpickr-weekdays {
+    color: var(--color-brand-800);
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.selected:hover {
+    background: var(--color-brand-600);
+    border-color: var(--color-brand-600);
+}
+
+.flatpickr-day.today {
+    border-color: var(--color-gold-500);
+}
+
+.flatpickr-day:hover {
+    background: var(--color-brand-100);
+}
+
+.flatpickr-day.flatpickr-disabled,
+.flatpickr-day.flatpickr-disabled:hover {
+    color: color-mix(in srgb, var(--color-ink-900) 25%, transparent);
 }

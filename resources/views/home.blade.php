@@ -41,6 +41,30 @@
         </div>
     </section>
 
+    {{-- Trust bar --}}
+    <section class="bg-white py-8">
+        <div class="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 sm:px-6 lg:grid-cols-4 lg:px-8">
+            @foreach ([
+                ['icon' => 'M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z', 'title' => '100%', 'subtitle' => 'Pour toutes les femmes'],
+                ['icon' => 'M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5', 'title' => '6j/7', 'subtitle' => 'Sur rendez-vous'],
+                ['icon' => 'M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z', 'title' => 'Strasbourg', 'subtitle' => 'Centre-ville'],
+                ['icon' => 'M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 18 4.5h-2.25m-7.5 0h7.5m-7.5 0v13.5a2.25 2.25 0 0 0 2.25 2.25h4.5a2.25 2.25 0 0 0 2.25-2.25V4.5', 'title' => 'En ligne', 'subtitle' => 'Réservation 24/7'],
+            ] as $stat)
+                <div class="flex items-center gap-3">
+                    <span class="flex h-11 w-11 flex-none items-center justify-center rounded-full bg-gold-100 text-gold-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="{{ $stat['icon'] }}" />
+                        </svg>
+                    </span>
+                    <div>
+                        <p class="font-serif text-lg font-semibold leading-tight text-ink-900">{{ $stat['title'] }}</p>
+                        <p class="text-xs text-ink-900/60">{{ $stat['subtitle'] }}</p>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </section>
+
     {{-- Seasonal promo: rentrée scolaire --}}
     <section class="bg-brand-900 py-16 text-white">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -68,7 +92,9 @@
     </section>
 
     {{-- About teaser --}}
-    <section class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+    <section class="relative overflow-hidden">
+        <div class="pointer-events-none absolute -right-32 top-10 h-80 w-80 rounded-full bg-rose-100/60 blur-3xl"></div>
+        <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div class="grid items-center gap-12 lg:grid-cols-2">
             <div>
                 <p class="section-eyebrow">Bienvenue</p>
@@ -99,6 +125,7 @@
                 <img src="{{ asset('images/braids8.jpg') }}" alt="Box braids" class="col-span-1 rounded-2xl shadow-sm">
             </div>
         </div>
+        </div>
     </section>
 
     {{-- Services teaser --}}
@@ -111,7 +138,10 @@
 
             <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 @forelse ($services->take(4) as $service)
-                    <div class="card flex flex-col overflow-hidden">
+                    <div class="card card-hover relative flex flex-col overflow-hidden">
+                        @if ($service->slug === 'knotless-braids')
+                            <span class="badge-gold absolute left-3 top-3 z-10">Populaire</span>
+                        @endif
                         <img
                             src="{{ $service->image_path ? asset($service->image_path) : 'https://placehold.co/480x360/faeadb/863f1f?text='.urlencode($service->name) }}"
                             alt="{{ $service->name }}"
@@ -176,9 +206,9 @@
     </section>
 
     {{-- Testimonials --}}
-    <section class="bg-brand-900 py-20 text-white">
+    <section class="bg-gradient-to-br from-brand-900 to-rose-900 py-20 text-white">
         <div class="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-            <p class="text-sm font-semibold uppercase tracking-widest text-brand-200">Elles nous font confiance</p>
+            <p class="section-eyebrow-gold">Elles nous font confiance</p>
             <h2 class="mt-2 font-serif text-3xl font-semibold sm:text-4xl">Avis de nos clientes</h2>
 
             <div class="testimonials-swiper swiper mt-10">
@@ -191,7 +221,14 @@
                     ] as $t)
                         <div class="swiper-slide">
                             <div class="rounded-2xl bg-white/10 p-8">
-                                <p class="text-white/90">&laquo; {{ $t['text'] }} &raquo;</p>
+                                <div class="stars-gold flex justify-center gap-1">
+                                    @for ($i = 0; $i < 5; $i++)
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.955a1 1 0 0 0 .95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.368 2.447a1 1 0 0 0-.363 1.118l1.287 3.955c.299.921-.755 1.688-1.538 1.118l-3.367-2.447a1 1 0 0 0-1.176 0l-3.367 2.447c-.783.57-1.837-.197-1.538-1.118l1.287-3.955a1 1 0 0 0-.363-1.118L2.063 9.382c-.783-.57-.38-1.81.588-1.81h4.163a1 1 0 0 0 .95-.69l1.285-3.955Z" />
+                                        </svg>
+                                    @endfor
+                                </div>
+                                <p class="mt-3 text-white/90">&laquo; {{ $t['text'] }} &raquo;</p>
                                 <p class="mt-4 font-semibold text-brand-100">— {{ $t['name'] }}</p>
                             </div>
                         </div>

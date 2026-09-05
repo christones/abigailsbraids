@@ -19,7 +19,10 @@
     <section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             @forelse ($services as $service)
-                <div class="card flex flex-col overflow-hidden">
+                <div class="card card-hover relative flex flex-col overflow-hidden">
+                    @if ($service->slug === 'knotless-braids')
+                        <span class="badge-gold absolute left-3 top-3 z-10">Populaire</span>
+                    @endif
                     <img
                         src="{{ $service->image_path ? asset($service->image_path) : 'https://placehold.co/600x400/faeadb/863f1f?text='.urlencode($service->name) }}"
                         alt="{{ $service->name }}"
