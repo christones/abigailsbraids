@@ -16,7 +16,7 @@
             Abigail's Braids
         </a>
 
-        <div class="hidden items-center gap-8 md:flex">
+        <div class="hidden items-center gap-6 lg:flex">
             @foreach ($navLinks as $routeName => $label)
                 <a
                     href="{{ route($routeName) }}"
@@ -27,7 +27,7 @@
             @endforeach
         </div>
 
-        <div class="hidden md:block">
+        <div class="hidden lg:block">
             <a href="{{ route('booking.create') }}" class="btn-primary">
                 Réserver
             </a>
@@ -36,7 +36,7 @@
         <button
             type="button"
             data-nav-toggle
-            class="inline-flex items-center justify-center rounded-lg p-2 text-ink-900 md:hidden"
+            class="inline-flex items-center justify-center rounded-lg p-2 text-ink-900 lg:hidden"
             aria-controls="mobile-nav"
             aria-expanded="false"
         >
@@ -47,7 +47,7 @@
         </button>
     </nav>
 
-    <div id="mobile-nav" data-mobile-nav class="hidden border-t border-ink-900/5 md:hidden">
+    <div id="mobile-nav" data-mobile-nav class="hidden border-t border-ink-900/5 lg:hidden">
         <div class="space-y-1 px-4 py-3">
             @foreach ($navLinks as $routeName => $label)
                 <a
