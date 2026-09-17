@@ -75,7 +75,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Booking date picker: closed Sundays (0) and Mondays (1), earliest tomorrow
+    // Booking date picker: earliest tomorrow. Days are not restricted here since
+    // opening hours are not finalized yet; availability is confirmed by phone/e-mail.
     const dateInput = document.querySelector('#preferred_date');
     if (dateInput) {
         flatpickr(dateInput, {
@@ -85,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
             altFormat: 'j F Y',
             altInputClass: 'form-input',
             minDate: new Date().fp_incr(1),
-            disable: [(date) => date.getDay() === 0 || date.getDay() === 1],
             disableMobile: true,
         });
     }
