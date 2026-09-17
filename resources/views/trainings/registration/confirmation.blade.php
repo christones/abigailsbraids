@@ -13,7 +13,7 @@
 
         <h1 class="section-title mt-6">Merci {{ $registration->candidate_name }} !</h1>
         <p class="mt-4 text-ink-900/70">
-            Votre inscription a bien été enregistrée. Le salon vous contactera prochainement pour confirmer
+            Votre inscription a bien été enregistrée. Nous vous contacterons prochainement pour confirmer
             votre session de formation.
         </p>
 

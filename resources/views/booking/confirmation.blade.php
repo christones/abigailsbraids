@@ -13,7 +13,7 @@
 
         <h1 class="section-title mt-6">Merci {{ $booking->client_name }} !</h1>
         <p class="mt-4 text-ink-900/70">
-            Votre demande de rendez-vous a bien été enregistrée. Le salon vous contactera prochainement pour
+            Votre demande de rendez-vous a bien été enregistrée. Nous vous contacterons prochainement pour
             confirmer votre créneau.
         </p>
 

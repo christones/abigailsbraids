@@ -6,7 +6,7 @@
                 Abigail's Braids
             </a>
             <p class="mt-4 max-w-xs text-sm text-ink-900/70">
-                Salon spécialisé en tresses et nattes africaines à Strasbourg. Box braids, knotless, vanilles, cornrows et soins capillaires, pour sublimer toutes les femmes.
+                Tresses et nattes africaines sur rendez-vous à Strasbourg. Box braids, knotless, vanilles, cornrows et soins capillaires, pour sublimer toutes les femmes.
             </p>
             <div class="mt-5 flex gap-4">
                 <a href="https://www.facebook.com/abigailsbraids" target="_blank" rel="noopener noreferrer" class="text-ink-900/60 hover:text-brand-700" aria-label="Facebook">
@@ -37,8 +37,7 @@
                 <li>Strasbourg, France</li>
                 <li><a href="tel:+33650991931" class="hover:text-brand-700">+33 6 50 99 19 31</a></li>
                 <li><a href="mailto:contact@abigailsbraids.com" class="hover:text-brand-700">contact@abigailsbraids.com</a></li>
-                <li class="pt-2">Mardi – Samedi : 9h – 18h</li>
-                <li>Dimanche &amp; Lundi : fermé</li>
+                <li class="pt-2">Horaires communiqués prochainement</li>
             </ul>
         </div>
     </div>

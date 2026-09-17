@@ -4,7 +4,9 @@ use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\ServiceCategoryController as AdminServiceCategoryController;
 use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
+use App\Http\Controllers\Admin\ServiceOptionController as AdminServiceOptionController;
 use App\Http\Controllers\Admin\TrainingController as AdminTrainingController;
 use App\Http\Controllers\Admin\TrainingRegistrationController as AdminTrainingRegistrationController;
 use App\Http\Controllers\Auth\LoginController;
@@ -59,6 +61,22 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/prestations/{service}/modifier', [AdminServiceController::class, 'edit'])->name('services.edit');
     Route::patch('/prestations/{service}', [AdminServiceController::class, 'update'])->name('services.update');
     Route::delete('/prestations/{service}', [AdminServiceController::class, 'destroy'])->name('services.destroy');
+
+    // Catégories de prestations
+    Route::get('/prestations/categories', [AdminServiceCategoryController::class, 'index'])->name('service-categories.index');
+    Route::get('/prestations/categories/nouvelle', [AdminServiceCategoryController::class, 'create'])->name('service-categories.create');
+    Route::post('/prestations/categories', [AdminServiceCategoryController::class, 'store'])->name('service-categories.store');
+    Route::get('/prestations/categories/{serviceCategory}/modifier', [AdminServiceCategoryController::class, 'edit'])->name('service-categories.edit');
+    Route::patch('/prestations/categories/{serviceCategory}', [AdminServiceCategoryController::class, 'update'])->name('service-categories.update');
+    Route::delete('/prestations/categories/{serviceCategory}', [AdminServiceCategoryController::class, 'destroy'])->name('service-categories.destroy');
+
+    // Options / variantes d'une prestation
+    Route::get('/prestations/{service}/options', [AdminServiceOptionController::class, 'index'])->name('services.options.index');
+    Route::get('/prestations/{service}/options/nouvelle', [AdminServiceOptionController::class, 'create'])->name('services.options.create');
+    Route::post('/prestations/{service}/options', [AdminServiceOptionController::class, 'store'])->name('services.options.store');
+    Route::get('/prestations/{service}/options/{option}/modifier', [AdminServiceOptionController::class, 'edit'])->name('services.options.edit');
+    Route::patch('/prestations/{service}/options/{option}', [AdminServiceOptionController::class, 'update'])->name('services.options.update');
+    Route::delete('/prestations/{service}/options/{option}', [AdminServiceOptionController::class, 'destroy'])->name('services.options.destroy');
 
     // Catalogue des formations
     Route::get('/formations', [AdminTrainingController::class, 'index'])->name('trainings.index');

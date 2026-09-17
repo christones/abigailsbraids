@@ -5,6 +5,7 @@ namespace App\Models;
 use Database\Factories\ServiceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Service extends Model
@@ -18,6 +19,7 @@ class Service extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'service_category_id',
         'name',
         'slug',
         'description',
@@ -51,6 +53,26 @@ class Service extends Model
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);
+    }
+
+    /**
+     * Get the category this service belongs to.
+     *
+     * @return BelongsTo<ServiceCategory, $this>
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(ServiceCategory::class, 'service_category_id');
+    }
+
+    /**
+     * Get the option variants available for this service.
+     *
+     * @return HasMany<ServiceOption, $this>
+     */
+    public function options(): HasMany
+    {
+        return $this->hasMany(ServiceOption::class);
     }
 
     /**

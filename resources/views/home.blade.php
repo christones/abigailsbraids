@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', "Abigail's Braids — Salon de tresses africaines à Strasbourg")
-@section('description', "Salon de tresses et nattes africaines à Strasbourg. Box braids, knotless braids, vanilles, cornrows... Réservez votre rendez-vous en ligne pour toutes les femmes.")
+@section('title', "Abigail's Braids — Tresses africaines sur rendez-vous à Strasbourg")
+@section('description', "Tresses et nattes africaines sur rendez-vous à Strasbourg. Box braids, knotless braids, vanilles, cornrows... Réservez votre rendez-vous en ligne pour toutes les femmes.")
 
 @section('content')
 
@@ -47,7 +47,7 @@
             @foreach ([
                 ['icon' => 'M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z', 'title' => '100%', 'subtitle' => 'Pour toutes les femmes'],
                 ['icon' => 'M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5', 'title' => '6j/7', 'subtitle' => 'Sur rendez-vous'],
-                ['icon' => 'M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z', 'title' => 'Strasbourg', 'subtitle' => 'Centre-ville'],
+                ['icon' => 'M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z', 'title' => 'Strasbourg', 'subtitle' => 'Sur rendez-vous'],
                 ['icon' => 'M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 18 4.5h-2.25m-7.5 0h7.5m-7.5 0v13.5a2.25 2.25 0 0 0 2.25 2.25h4.5a2.25 2.25 0 0 0 2.25-2.25V4.5', 'title' => 'En ligne', 'subtitle' => 'Réservation 24/7'],
             ] as $stat)
                 <div class="flex items-center gap-3">
@@ -98,7 +98,7 @@
         <div class="grid items-center gap-12 lg:grid-cols-2">
             <div>
                 <p class="section-eyebrow">Bienvenue</p>
-                <h2 class="section-title mt-2">Un salon pensé pour toutes les femmes</h2>
+                <h2 class="section-title mt-2">Une activité pensée pour toutes les femmes</h2>
                 <p class="mt-5 text-ink-900/70">
                     Chez Abigail's Braids, chaque femme trouve sa place : cheveux courts ou longs, naturels,
                     colorés ou lissés. Nous prenons le temps de comprendre votre chevelure pour vous proposer
@@ -201,40 +201,6 @@
                     @endforeach
                 </div>
                 <div class="swiper-pagination mt-4 static"></div>
-            </div>
-        </div>
-    </section>
-
-    {{-- Testimonials --}}
-    <section class="bg-gradient-to-br from-brand-900 to-rose-900 py-20 text-white">
-        <div class="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-            <p class="section-eyebrow-gold">Elles nous font confiance</p>
-            <h2 class="mt-2 font-serif text-3xl font-semibold sm:text-4xl">Avis de nos clientes</h2>
-
-            <div class="testimonials-swiper swiper mt-10">
-                <div class="swiper-wrapper">
-                    @foreach ([
-                        ['name' => 'Fatou', 'text' => 'Un accueil incroyable et des tresses impeccables, exactement ce que je voulais.'],
-                        ['name' => 'Claire', 'text' => 'Première fois que je fais des knotless braids, résultat magnifique et sans douleur.'],
-                        ['name' => 'Aïcha', 'text' => 'Le salon idéal pour prendre soin de mes cheveux et de ceux de ma fille.'],
-                        ['name' => 'Léa', 'text' => 'Réservation en ligne super simple, rendez-vous respecté et tresses au top.'],
-                    ] as $t)
-                        <div class="swiper-slide">
-                            <div class="rounded-2xl bg-white/10 p-8">
-                                <div class="stars-gold flex justify-center gap-1">
-                                    @for ($i = 0; $i < 5; $i++)
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.955a1 1 0 0 0 .95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.368 2.447a1 1 0 0 0-.363 1.118l1.287 3.955c.299.921-.755 1.688-1.538 1.118l-3.367-2.447a1 1 0 0 0-1.176 0l-3.367 2.447c-.783.57-1.837-.197-1.538-1.118l1.287-3.955a1 1 0 0 0-.363-1.118L2.063 9.382c-.783-.57-.38-1.81.588-1.81h4.163a1 1 0 0 0 .95-.69l1.285-3.955Z" />
-                                        </svg>
-                                    @endfor
-                                </div>
-                                <p class="mt-3 text-white/90">&laquo; {{ $t['text'] }} &raquo;</p>
-                                <p class="mt-4 font-semibold text-brand-100">— {{ $t['name'] }}</p>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-                <div class="swiper-pagination mt-6 static"></div>
             </div>
         </div>
     </section>
