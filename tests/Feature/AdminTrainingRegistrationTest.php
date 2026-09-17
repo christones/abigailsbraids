@@ -8,13 +8,13 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class AdminTrainingTest extends TestCase
+class AdminTrainingRegistrationTest extends TestCase
 {
     use RefreshDatabase;
 
     public function test_guests_are_redirected_to_login(): void
     {
-        $response = $this->get(route('admin.trainings.index'));
+        $response = $this->get(route('admin.training-registrations.index'));
 
         $response->assertRedirect(route('login'));
     }
@@ -25,7 +25,7 @@ class AdminTrainingTest extends TestCase
         $training = Training::factory()->create();
         $registration = TrainingRegistration::factory()->for($training)->create();
 
-        $response = $this->actingAs($user)->get(route('admin.trainings.index'));
+        $response = $this->actingAs($user)->get(route('admin.training-registrations.index'));
 
         $response->assertOk();
         $response->assertSee($registration->candidate_name);
@@ -37,7 +37,7 @@ class AdminTrainingTest extends TestCase
         $training = Training::factory()->create();
         $registration = TrainingRegistration::factory()->for($training)->create(['status' => TrainingRegistration::STATUS_PENDING]);
 
-        $response = $this->actingAs($user)->patch(route('admin.trainings.update', $registration), [
+        $response = $this->actingAs($user)->patch(route('admin.training-registrations.update', $registration), [
             'status' => TrainingRegistration::STATUS_CONFIRMED,
         ]);
 
@@ -54,7 +54,7 @@ class AdminTrainingTest extends TestCase
         $training = Training::factory()->create();
         $registration = TrainingRegistration::factory()->for($training)->create();
 
-        $response = $this->actingAs($user)->delete(route('admin.trainings.destroy', $registration));
+        $response = $this->actingAs($user)->delete(route('admin.training-registrations.destroy', $registration));
 
         $response->assertRedirect();
         $this->assertDatabaseMissing('training_registrations', ['id' => $registration->id]);

@@ -20,39 +20,16 @@
 
     <section class="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
         <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            @foreach ([
-                ['images/braids8.jpg', 'Box Braids'],
-                ['images/braids9.jpg', 'Knotless Braids'],
-                ['images/braids7.jpg', 'Vanilles / Twists'],
-                ['images/braids4.jpg', 'Cornrows'],
-                ['images/braids20.jpg', 'Extensions colorées'],
-                ['images/braids5.jpg', 'Faux Locs'],
-                ['images/braids13.jpg', 'Coiffure Enfant'],
-                ['images/braids6.jpg', 'Soin & Démêlage'],
-                ['images/braids.jpg', 'Coiffure Enfant'],
-                ['images/braids2.jpg', 'Cheveux naturels'],
-                ['images/braids3.jpg', 'Box Braids'],
-                ['images/braids10.jpg', 'Coiffure Enfant'],
-                ['images/braids11.jpg', 'Coiffure Enfant'],
-                ['images/braids12.jpg', 'Coiffure Enfant'],
-                ['images/braids14.jpg', 'Coiffure Enfant'],
-                ['images/braids15.jpg', 'Vanilles / Twists'],
-                ['images/braids17.jpg', 'Coiffure Enfant'],
-                ['images/braids19.jpg', 'Cornrows'],
-                ['images/braids21.jpg', 'Extensions colorées'],
-                ['images/braids23.jpg', 'Extensions colorées'],
-                ['images/braids24.jpg', 'Extensions colorées'],
-                ['images/braids25.jpg', 'Cornrows'],
-                ['images/braids26.jpg', 'Cornrows'],
-                ['images/braids27.jpg', 'Box Braids'],
-            ] as [$image, $label])
+            @forelse ($images as $image)
                 <img
-                    src="{{ asset($image) }}"
-                    alt="{{ $label }}"
+                    src="{{ asset($image->image_path) }}"
+                    alt="{{ $image->label ?? 'Réalisation Abigail\'s Braids' }}"
                     class="aspect-[4/5] w-full rounded-xl object-cover shadow-sm"
                     loading="lazy"
                 >
-            @endforeach
+            @empty
+                <p class="col-span-full text-center text-ink-900/60">La galerie sera bientôt disponible.</p>
+            @endforelse
         </div>
     </section>
 

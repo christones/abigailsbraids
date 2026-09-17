@@ -25,7 +25,7 @@ class TrainingRegistrationController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return view('admin.trainings', [
+        return view('admin.training-registrations', [
             'registrations' => $registrations,
             'status' => $status,
             'counts' => [

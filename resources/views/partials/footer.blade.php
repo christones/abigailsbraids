@@ -2,7 +2,7 @@
     <div class="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
             <a href="{{ route('home') }}" class="flex items-center gap-2 font-serif text-xl font-semibold text-brand-800">
-                <img src="{{ asset('images/logoAbi.jpg') }}" alt="Abigail's Braids" class="h-10 w-10 rounded-full object-cover">
+                <img src="{{ asset('images/logooAbi.png') }}" alt="Abigail's Braids" class="h-10 w-10 rounded-full object-cover">
                 Abigail's Braids
             </a>
             <p class="mt-4 max-w-xs text-sm text-ink-900/70">
@@ -23,6 +23,7 @@
             <ul class="mt-4 space-y-2 text-sm text-ink-900/70">
                 <li><a href="{{ route('services.index') }}" class="hover:text-brand-700">Nos prestations</a></li>
                 <li><a href="{{ route('trainings.index') }}" class="hover:text-brand-700">Nos formations</a></li>
+                <li><a href="{{ route('products.index') }}" class="hover:text-brand-700">Boutique</a></li>
                 <li><a href="{{ route('gallery') }}" class="hover:text-brand-700">Galerie</a></li>
                 <li><a href="{{ route('about') }}" class="hover:text-brand-700">À propos</a></li>
                 <li><a href="{{ route('booking.create') }}" class="hover:text-brand-700">Prendre rendez-vous</a></li>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', "Formations — Espace salon")
+@section('title', "Inscriptions formations — Espace salon")
 
 @section('content')
     <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -16,10 +16,7 @@
             </form>
         </div>
 
-        <div class="mt-6 flex gap-2 border-b border-ink-900/10">
-            <a href="{{ route('admin.dashboard') }}" class="border-b-2 border-transparent px-3 py-2 text-sm font-medium text-ink-900/60 hover:text-brand-700">Réservations</a>
-            <a href="{{ route('admin.trainings.index') }}" class="border-b-2 border-brand-600 px-3 py-2 text-sm font-medium text-brand-700">Formations</a>
-        </div>
+        @include('admin.partials.nav')
 
         <div class="mt-8 grid gap-4 sm:grid-cols-3">
             <div class="card p-5">
@@ -37,10 +34,10 @@
         </div>
 
         <div class="mt-8 flex flex-wrap gap-2">
-            <a href="{{ route('admin.trainings.index') }}" class="rounded-full px-4 py-1.5 text-sm {{ $status === '' ? 'bg-brand-600 text-white' : 'bg-white text-ink-900/70 ring-1 ring-ink-900/10' }}">Toutes</a>
+            <a href="{{ route('admin.training-registrations.index') }}" class="rounded-full px-4 py-1.5 text-sm {{ $status === '' ? 'bg-brand-600 text-white' : 'bg-white text-ink-900/70 ring-1 ring-ink-900/10' }}">Toutes</a>
             @foreach (\App\Models\TrainingRegistration::statusLabels() as $value => $label)
                 <a
-                    href="{{ route('admin.trainings.index', ['statut' => $value]) }}"
+                    href="{{ route('admin.training-registrations.index', ['statut' => $value]) }}"
                     class="rounded-full px-4 py-1.5 text-sm {{ $status === $value ? 'bg-brand-600 text-white' : 'bg-white text-ink-900/70 ring-1 ring-ink-900/10' }}"
                 >
                     {{ $label }}
@@ -73,7 +70,7 @@
                                 <div class="text-xs text-ink-900/50">{{ $registration->candidate_email }}</div>
                             </td>
                             <td class="px-4 py-3">
-                                <form method="POST" action="{{ route('admin.trainings.update', $registration) }}">
+                                <form method="POST" action="{{ route('admin.training-registrations.update', $registration) }}">
                                     @csrf
                                     @method('PATCH')
                                     <select
@@ -88,7 +85,7 @@
                                 </form>
                             </td>
                             <td class="px-4 py-3 text-right">
-                                <form method="POST" action="{{ route('admin.trainings.destroy', $registration) }}" onsubmit="return confirm('Supprimer cette inscription ?');">
+                                <form method="POST" action="{{ route('admin.training-registrations.destroy', $registration) }}" onsubmit="return confirm('Supprimer cette inscription ?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-xs font-medium text-red-600 hover:text-red-700">Supprimer</button>
