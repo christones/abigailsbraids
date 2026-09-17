@@ -15,7 +15,7 @@
                     <tr>
                         <td style="background-color:#a95524; padding:28px 32px; text-align:center;">
                             <img
-                                src="{{ $message->embed(public_path('images/logoAbi.jpg')) }}"
+                                src="{{ $message->embed(public_path('images/logooAbi.png')) }}"
                                 alt="Logo Abigail's Braids"
                                 width="64"
                                 height="64"

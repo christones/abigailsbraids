@@ -16,10 +16,7 @@
             </form>
         </div>
 
-        <div class="mt-6 flex gap-2 border-b border-ink-900/10">
-            <a href="{{ route('admin.dashboard') }}" class="border-b-2 border-brand-600 px-3 py-2 text-sm font-medium text-brand-700">Réservations</a>
-            <a href="{{ route('admin.trainings.index') }}" class="border-b-2 border-transparent px-3 py-2 text-sm font-medium text-ink-900/60 hover:text-brand-700">Formations</a>
-        </div>
+        @include('admin.partials.nav')
 
         <div class="mt-8 grid gap-4 sm:grid-cols-3">
             <div class="card p-5">

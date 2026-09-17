@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GalleryImage;
 use Illuminate\View\View;
 
 class PageController extends Controller
@@ -19,7 +20,14 @@ class PageController extends Controller
      */
     public function gallery(): View
     {
-        return view('gallery');
+        $images = GalleryImage::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('gallery', [
+            'images' => $images,
+        ]);
     }
 
     /**
