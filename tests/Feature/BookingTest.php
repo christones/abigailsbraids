@@ -25,6 +25,22 @@ class BookingTest extends TestCase
         $response->assertSee($service->name);
     }
 
+    public function test_booking_page_preselects_the_chosen_service(): void
+    {
+        $chosen = Service::factory()->create(['is_active' => true, 'name' => 'Box Braids']);
+        $other = Service::factory()->create(['is_active' => true, 'name' => 'Vanilles']);
+
+        $response = $this->get(route('booking.create', ['prestation' => $chosen->id]));
+
+        $response->assertOk();
+
+        preg_match_all('/<option\s+value="(\d+)"\s*(selected)?\s*>/', $response->getContent(), $matches, PREG_SET_ORDER);
+        $selected = collect($matches)->first(fn ($match) => isset($match[2]) && $match[2] === 'selected');
+
+        $this->assertNotNull($selected, 'Expected one option to be pre-selected.');
+        $this->assertSame((string) $chosen->id, $selected[1]);
+    }
+
     public function test_a_client_can_submit_a_booking_request(): void
     {
         $service = Service::factory()->create();

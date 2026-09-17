@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', "Abigail's Braids") — Tresses & Nattes Africaines à Strasbourg</title>
-    <meta name="description" content="@yield('description', "Abigail's Braids, salon de tresses et nattes africaines à Strasbourg. Box braids, knotless, vanilles, cornrows... Réservez votre rendez-vous en ligne.")">
+    <meta name="description" content="@yield('description', "Abigail's Braids, tresses et nattes africaines sur rendez-vous à Strasbourg. Box braids, knotless, vanilles, cornrows... Réservez votre rendez-vous en ligne.")">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="icon" href="{{ asset('images/logooAbi.png') }}" type="image/png">

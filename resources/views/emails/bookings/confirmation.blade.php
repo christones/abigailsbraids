@@ -14,7 +14,7 @@
                 Merci {{ $booking->client_name }} !
             </h1>
             <p style="margin:12px 0 0; color:#5f2c17; font-size:14px; line-height:1.6;">
-                Votre demande de rendez-vous a bien été enregistrée. Le salon vous contactera prochainement par
+                Votre demande de rendez-vous a bien été enregistrée. Nous vous contacterons prochainement par
                 téléphone ou e-mail pour confirmer votre créneau.
             </p>
         </td>

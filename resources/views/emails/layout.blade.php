@@ -25,7 +25,7 @@
                                 Abigail's Braids
                             </div>
                             <div style="color:#f3d1ae; font-size:12px; text-transform:uppercase; letter-spacing:2px; margin-top:4px;">
-                                Salon de tresses &amp; nattes africaines &middot; Strasbourg
+                                Tresses &amp; nattes africaines sur rendez-vous &middot; Strasbourg
                             </div>
                         </td>
                     </tr>

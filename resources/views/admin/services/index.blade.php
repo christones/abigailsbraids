@@ -24,7 +24,8 @@
             </div>
         @endif
 
-        <div class="mt-8 flex justify-end">
+        <div class="mt-8 flex flex-wrap items-center justify-end gap-3">
+            <a href="{{ route('admin.service-categories.index') }}" class="btn-secondary text-sm">Gérer les catégories</a>
             <a href="{{ route('admin.services.create') }}" class="btn-primary text-sm">Ajouter une prestation</a>
         </div>
 
@@ -34,6 +35,7 @@
                     <tr>
                         <th class="px-4 py-3">Photo</th>
                         <th class="px-4 py-3">Nom</th>
+                        <th class="px-4 py-3">Catégorie</th>
                         <th class="px-4 py-3">Durée</th>
                         <th class="px-4 py-3">Prix</th>
                         <th class="px-4 py-3">Statut</th>
@@ -51,6 +53,7 @@
                                 >
                             </td>
                             <td class="px-4 py-3 font-medium text-ink-900">{{ $service->name }}</td>
+                            <td class="px-4 py-3 text-ink-900/70">{{ $service->category->name ?? 'Non classée' }}</td>
                             <td class="px-4 py-3 text-ink-900/70">{{ $service->durationLabel() }}</td>
                             <td class="px-4 py-3 text-ink-900/70">{{ number_format((float) $service->price_from, 0, ',', ' ') }} €</td>
                             <td class="px-4 py-3">
@@ -61,6 +64,8 @@
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-right">
+                                <a href="{{ route('admin.services.options.index', $service) }}" class="text-xs font-medium text-brand-700 hover:text-brand-800">Options</a>
+                                ·
                                 <a href="{{ route('admin.services.edit', $service) }}" class="text-xs font-medium text-brand-700 hover:text-brand-800">Modifier</a>
                                 <form method="POST" action="{{ route('admin.services.destroy', $service) }}" class="mt-1" onsubmit="return confirm('Supprimer cette prestation ?');">
                                     @csrf
@@ -71,7 +76,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-8 text-center text-ink-900/50">Aucune prestation pour le moment.</td>
+                            <td colspan="7" class="px-4 py-8 text-center text-ink-900/50">Aucune prestation pour le moment.</td>
                         </tr>
                     @endforelse
                 </tbody>

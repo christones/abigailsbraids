@@ -9,8 +9,8 @@
             <p class="section-eyebrow">Formations</p>
             <h1 class="section-title mt-2">Apprenez l'art de la tresse</h1>
             <p class="mx-auto mt-4 max-w-2xl text-ink-900/70">
-                Ouvertes à toutes, débutantes ou déjà initiées, nos formations vous transmettent les techniques
-                du salon dans une ambiance bienveillante et professionnelle.
+                Ouvertes à toutes, débutantes ou déjà initiées, nos formations vous transmettent nos techniques
+                de tressage dans une ambiance bienveillante et professionnelle.
             </p>
         </div>
     </section>

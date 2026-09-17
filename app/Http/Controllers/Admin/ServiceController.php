@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Admin\Concerns\HandlesImageUploads;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
+use App\Models\ServiceCategory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -19,7 +20,7 @@ class ServiceController extends Controller
      */
     public function index(): View
     {
-        $services = Service::query()->orderBy('sort_order')->get();
+        $services = Service::query()->with('category')->orderBy('sort_order')->get();
 
         return view('admin.services.index', [
             'services' => $services,
@@ -31,7 +32,9 @@ class ServiceController extends Controller
      */
     public function create(): View
     {
-        return view('admin.services.create');
+        return view('admin.services.create', [
+            'categories' => ServiceCategory::query()->orderBy('sort_order')->get(),
+        ]);
     }
 
     /**
@@ -59,6 +62,7 @@ class ServiceController extends Controller
     {
         return view('admin.services.edit', [
             'service' => $service,
+            'categories' => ServiceCategory::query()->orderBy('sort_order')->get(),
         ]);
     }
 
@@ -99,7 +103,10 @@ class ServiceController extends Controller
      */
     private function validated(Request $request): array
     {
+        $request->merge(['service_category_id' => $request->input('service_category_id') ?: null]);
+
         $data = $request->validate([
+            'service_category_id' => ['nullable', 'exists:service_categories,id'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
             'duration_minutes' => ['required', 'integer', 'min:15', 'max:1440'],
@@ -107,6 +114,7 @@ class ServiceController extends Controller
             'image' => ['nullable', 'image', 'max:4096'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ], [], [
+            'service_category_id' => 'catégorie',
             'name' => 'nom',
             'description' => 'description',
             'duration_minutes' => 'durée',

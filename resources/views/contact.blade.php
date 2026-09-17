@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', "Contact — Abigail's Braids")
-@section('description', "Contactez Abigail's Braids, salon de tresses africaines à Strasbourg, ou réservez votre rendez-vous en ligne.")
+@section('description', "Contactez Abigail's Braids, tresses africaines sur rendez-vous à Strasbourg, ou réservez votre rendez-vous en ligne.")
 
 @section('content')
     <section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -28,10 +28,7 @@
                     </div>
                     <div class="flex items-start gap-3">
                         <dt class="w-24 flex-none font-semibold text-ink-900">Horaires</dt>
-                        <dd>
-                            Mardi – Samedi : 9h – 18h<br>
-                            Dimanche &amp; Lundi : fermé
-                        </dd>
+                        <dd>Communiqués prochainement — vos disponibilités seront confirmées lors de la prise de rendez-vous.</dd>
                     </div>
                 </dl>
 
@@ -41,7 +38,7 @@
                 </div>
 
                 <p class="mt-6 text-xs text-ink-900/40">
-                    * Coordonnées à confirmer / mettre à jour par le salon.
+                    * Coordonnées et horaires à confirmer prochainement.
                 </p>
             </div>
 

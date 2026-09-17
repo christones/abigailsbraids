@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Service;
+use App\Models\ServiceCategory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -20,6 +21,7 @@ class ServiceSeeder extends Seeder
                 'duration_minutes' => 240,
                 'price_from' => 90.00,
                 'image_path' => 'images/braids8.jpg',
+                'category' => 'Braids',
             ],
             [
                 'name' => 'Knotless Braids',
@@ -27,6 +29,7 @@ class ServiceSeeder extends Seeder
                 'duration_minutes' => 270,
                 'price_from' => 110.00,
                 'image_path' => 'images/braids9.jpg',
+                'category' => 'Braids',
             ],
             [
                 'name' => 'Vanilles (Twists)',
@@ -34,6 +37,7 @@ class ServiceSeeder extends Seeder
                 'duration_minutes' => 180,
                 'price_from' => 80.00,
                 'image_path' => 'images/braids7.jpg',
+                'category' => 'Vanilles',
             ],
             [
                 'name' => 'Cornrows / Plaquées',
@@ -41,6 +45,7 @@ class ServiceSeeder extends Seeder
                 'duration_minutes' => 120,
                 'price_from' => 50.00,
                 'image_path' => 'images/braids4.jpg',
+                'category' => 'Tresses collées',
             ],
             [
                 'name' => 'Tresses avec Extensions Colorées',
@@ -48,6 +53,7 @@ class ServiceSeeder extends Seeder
                 'duration_minutes' => 240,
                 'price_from' => 100.00,
                 'image_path' => 'images/braids20.jpg',
+                'category' => 'Braids',
             ],
             [
                 'name' => 'Locks / Faux Locs',
@@ -55,6 +61,7 @@ class ServiceSeeder extends Seeder
                 'duration_minutes' => 300,
                 'price_from' => 130.00,
                 'image_path' => 'images/braids5.jpg',
+                'category' => 'Styles bohèmes/bouclés',
             ],
             [
                 'name' => 'Coiffure Enfant',
@@ -62,6 +69,7 @@ class ServiceSeeder extends Seeder
                 'duration_minutes' => 90,
                 'price_from' => 35.00,
                 'image_path' => 'images/braids13.jpg',
+                'category' => 'Enfants',
             ],
             [
                 'name' => 'Soin & Démêlage',
@@ -69,13 +77,17 @@ class ServiceSeeder extends Seeder
                 'duration_minutes' => 60,
                 'price_from' => 25.00,
                 'image_path' => 'images/braids6.jpg',
+                'category' => 'Soins',
             ],
         ];
 
         foreach ($services as $index => $service) {
+            $category = ServiceCategory::where('slug', Str::slug($service['category']))->first();
+
             Service::updateOrCreate(
                 ['slug' => Str::slug($service['name'])],
                 [
+                    'service_category_id' => $category?->id,
                     'name' => $service['name'],
                     'description' => $service['description'],
                     'duration_minutes' => $service['duration_minutes'],

@@ -122,7 +122,7 @@
                             class="form-input pl-10"
                         >
                     </div>
-                    <p class="mt-1 text-xs text-ink-900/50">Salon fermé le dimanche et le lundi.</p>
+                    <p class="mt-1 text-xs text-ink-900/50">Vos disponibilités seront confirmées par téléphone ou e-mail après votre demande.</p>
                     @error('preferred_date')
                         <p class="form-error">{{ $message }}</p>
                     @enderror
@@ -172,7 +172,7 @@
                 </button>
 
                 <p class="text-xs text-ink-900/50">
-                    Votre rendez-vous sera confirmé par le salon par téléphone ou e-mail dans les meilleurs délais.
+                    Votre rendez-vous sera confirmé par Abigail's Braids par téléphone ou e-mail dans les meilleurs délais.
                 </p>
             </form>
         </div>

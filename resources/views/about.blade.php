@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', "À propos — Abigail's Braids")
-@section('description', "Découvrez l'histoire d'Abigail's Braids, salon de tresses et nattes africaines à Strasbourg, pensé pour toutes les femmes.")
+@section('description', "Découvrez l'histoire d'Abigail's Braids, activité de tresses et nattes africaines sur rendez-vous à Strasbourg, pensée pour toutes les femmes.")
 
 @section('content')
     <section class="bg-white">
@@ -11,8 +11,8 @@
                 <h1 class="section-title mt-2">L'art de la tresse, avec passion</h1>
                 <p class="mt-5 text-ink-900/70">
                     Abigail's Braids est né d'une passion pour l'art capillaire africain et d'une conviction simple :
-                    chaque femme mérite de se sentir belle et confiante dans ses cheveux. Installé à Strasbourg,
-                    notre salon accueille une clientèle fidèle et diverse, de tous âges et de toutes origines.
+                    chaque femme mérite de se sentir belle et confiante dans ses cheveux. Basée à Strasbourg, cette
+                    activité de tresses sur rendez-vous accueille une clientèle fidèle et diverse, de tous âges et de toutes origines.
                 </p>
                 <p class="mt-4 text-ink-900/70">
                     Nous mettons un point d'honneur à travailler avec des mèches de qualité, dans le respect du
@@ -32,12 +32,12 @@
                     <p class="mt-2 text-sm text-ink-900/70">Pour toutes les femmes, toutes textures de cheveux</p>
                 </div>
                 <div class="card p-8 text-center">
-                    <p class="font-serif text-4xl font-semibold text-brand-700">6j/7</p>
-                    <p class="mt-2 text-sm text-ink-900/70">Ouvert du mardi au dimanche sur rendez-vous</p>
+                    <p class="font-serif text-4xl font-semibold text-brand-700">Sur RDV</p>
+                    <p class="mt-2 text-sm text-ink-900/70">Créneaux confirmés selon disponibilités</p>
                 </div>
                 <div class="card p-8 text-center">
                     <p class="font-serif text-4xl font-semibold text-brand-700">Strasbourg</p>
-                    <p class="mt-2 text-sm text-ink-900/70">Un salon facilement accessible en centre-ville</p>
+                    <p class="mt-2 text-sm text-ink-900/70">Interventions sur rendez-vous</p>
                 </div>
             </div>
         </div>

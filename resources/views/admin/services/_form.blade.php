@@ -15,6 +15,24 @@
 </div>
 
 <div>
+    <label for="service_category_id" class="form-label">Catégorie</label>
+    <select id="service_category_id" name="service_category_id" class="form-input mt-1">
+        <option value="">-- Non classée --</option>
+        @foreach ($categories as $category)
+            <option
+                value="{{ $category->id }}"
+                @selected((int) old('service_category_id', $service->service_category_id ?? '') === $category->id)
+            >
+                {{ $category->name }}
+            </option>
+        @endforeach
+    </select>
+    <p class="mt-1 text-xs text-ink-900/50">
+        <a href="{{ route('admin.service-categories.index') }}" class="text-brand-700 hover:text-brand-800">Gérer les catégories</a>
+    </p>
+</div>
+
+<div>
     <label for="description" class="form-label">Description</label>
     <textarea id="description" name="description" rows="3" class="form-input mt-1">{{ old('description', $service->description ?? '') }}</textarea>
 </div>
@@ -48,3 +66,10 @@
         Visible sur le site
     </label>
 </div>
+
+@if (isset($service))
+    <div class="rounded-lg bg-brand-50 p-4 text-sm text-ink-900/70">
+        Options et variantes (longueur, rajouts, couleurs...) :
+        <a href="{{ route('admin.services.options.index', $service) }}" class="font-medium text-brand-700 hover:text-brand-800">gérer les options de cette prestation</a>
+    </div>
+@endif
