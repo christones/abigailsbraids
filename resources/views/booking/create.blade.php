@@ -157,7 +157,7 @@
                 <div>
                     <label for="hair_photo" class="form-label">Ajoutez une photo de vos cheveux actuellement (optionnel)</label>
                     <p class="mt-1 text-xs text-ink-900/50">Cela permet à la coiffeuse de voir la longueur et la nature de vos cheveux avant de confirmer le rendez-vous.</p>
-                    <input type="file" id="hair_photo" name="hair_photo" accept="image/*" class="form-input mt-2">
+                    <input type="file" id="hair_photo" name="hair_photo" accept="image/*" capture="user" class="form-input mt-2">
                     @error('hair_photo')
                         <p class="form-error">{{ $message }}</p>
                     @enderror

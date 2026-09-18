@@ -41,7 +41,6 @@ class AdminServiceOptionTest extends TestCase
         $response = $this->actingAs($user)->post(route('admin.services.options.store', $service), [
             'group_label' => 'Longueur',
             'value_label' => 'Mi-dos',
-            'sort_order' => 1,
             'is_active' => '1',
         ]);
 
@@ -51,6 +50,22 @@ class AdminServiceOptionTest extends TestCase
             'group_label' => 'Longueur',
             'value_label' => 'Mi-dos',
         ]);
+    }
+
+    public function test_authenticated_user_can_reorder_options_within_their_group(): void
+    {
+        $user = User::factory()->create();
+        $service = Service::factory()->create();
+        $first = ServiceOption::factory()->for($service)->create(['group_label' => 'Couleur', 'sort_order' => 0]);
+        $second = ServiceOption::factory()->for($service)->create(['group_label' => 'Couleur', 'sort_order' => 1]);
+        $otherGroup = ServiceOption::factory()->for($service)->create(['group_label' => 'Modèle', 'sort_order' => 2]);
+
+        $response = $this->actingAs($user)->patch(route('admin.services.options.move-up', [$service, $second]));
+
+        $response->assertRedirect(route('admin.services.options.index', $service));
+        $this->assertSame(0, $second->refresh()->sort_order);
+        $this->assertSame(1, $first->refresh()->sort_order);
+        $this->assertSame(2, $otherGroup->refresh()->sort_order);
     }
 
     public function test_authenticated_user_can_update_an_option(): void

@@ -33,6 +33,7 @@
             <table class="min-w-full divide-y divide-ink-900/5 text-sm">
                 <thead class="bg-brand-50 text-left text-xs font-semibold uppercase tracking-wide text-ink-900/60">
                     <tr>
+                        <th class="px-4 py-3">Ordre</th>
                         <th class="px-4 py-3">Photo</th>
                         <th class="px-4 py-3">Nom</th>
                         <th class="px-4 py-3">Catégorie</th>
@@ -45,6 +46,20 @@
                 <tbody class="divide-y divide-ink-900/5">
                     @forelse ($services as $service)
                         <tr>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-col gap-0.5">
+                                    <form method="POST" action="{{ route('admin.services.move-up', $service) }}">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="text-ink-900/50 hover:text-brand-700" title="Monter" aria-label="Monter">&uarr;</button>
+                                    </form>
+                                    <form method="POST" action="{{ route('admin.services.move-down', $service) }}">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="text-ink-900/50 hover:text-brand-700" title="Descendre" aria-label="Descendre">&darr;</button>
+                                    </form>
+                                </div>
+                            </td>
                             <td class="px-4 py-3">
                                 <img
                                     src="{{ $service->image_path ? asset($service->image_path) : 'https://placehold.co/80x80/faeadb/863f1f?text=%20' }}"
@@ -76,7 +91,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-4 py-8 text-center text-ink-900/50">Aucune prestation pour le moment.</td>
+                            <td colspan="8" class="px-4 py-8 text-center text-ink-900/50">Aucune prestation pour le moment.</td>
                         </tr>
                     @endforelse
                 </tbody>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Concerns\HandlesImageUploads;
+use App\Http\Controllers\Concerns\HandlesSortOrder;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
 use App\Models\ServiceCategory;
@@ -13,7 +14,7 @@ use Illuminate\View\View;
 
 class ServiceController extends Controller
 {
-    use HandlesImageUploads;
+    use HandlesImageUploads, HandlesSortOrder;
 
     /**
      * List every service (active and inactive) for management.
@@ -49,6 +50,9 @@ class ServiceController extends Controller
         }
 
         $validated['slug'] = Str::slug($validated['name']);
+        $validated['sort_order'] = $this->nextSortOrder(
+            Service::query()->where('service_category_id', $validated['service_category_id'])
+        );
 
         Service::create($validated);
 
@@ -97,6 +101,42 @@ class ServiceController extends Controller
     }
 
     /**
+     * Move a service up (earlier) among the services of its own category.
+     */
+    public function moveUp(Service $service): RedirectResponse
+    {
+        $previous = Service::query()
+            ->where('service_category_id', $service->service_category_id)
+            ->where('sort_order', '<', $service->sort_order)
+            ->orderByDesc('sort_order')
+            ->first();
+
+        if ($previous) {
+            $this->swapSortOrder($service, $previous);
+        }
+
+        return redirect()->route('admin.services.index');
+    }
+
+    /**
+     * Move a service down (later) among the services of its own category.
+     */
+    public function moveDown(Service $service): RedirectResponse
+    {
+        $next = Service::query()
+            ->where('service_category_id', $service->service_category_id)
+            ->where('sort_order', '>', $service->sort_order)
+            ->orderBy('sort_order')
+            ->first();
+
+        if ($next) {
+            $this->swapSortOrder($service, $next);
+        }
+
+        return redirect()->route('admin.services.index');
+    }
+
+    /**
      * Validate the shared service fields.
      *
      * @return array<string, mixed>
@@ -112,7 +152,6 @@ class ServiceController extends Controller
             'duration_minutes' => ['required', 'integer', 'min:15', 'max:1440'],
             'price_from' => ['required', 'numeric', 'min:0', 'max:99999.99'],
             'image' => ['nullable', 'image', 'max:4096'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
         ], [], [
             'service_category_id' => 'catégorie',
             'name' => 'nom',
@@ -123,7 +162,6 @@ class ServiceController extends Controller
         ]);
 
         unset($data['image']);
-        $data['sort_order'] = $data['sort_order'] ?? 0;
         $data['is_active'] = $request->boolean('is_active');
 
         return $data;

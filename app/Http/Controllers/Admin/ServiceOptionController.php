@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\HandlesSortOrder;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
 use App\Models\ServiceOption;
@@ -11,6 +12,8 @@ use Illuminate\View\View;
 
 class ServiceOptionController extends Controller
 {
+    use HandlesSortOrder;
+
     /**
      * List every option/variant for a given service.
      */
@@ -40,6 +43,10 @@ class ServiceOptionController extends Controller
     public function store(Request $request, Service $service): RedirectResponse
     {
         $validated = $this->validated($request);
+
+        $validated['sort_order'] = $this->nextSortOrder(
+            $service->options()->where('group_label', $validated['group_label'])
+        );
 
         $service->options()->create($validated);
 
@@ -80,6 +87,42 @@ class ServiceOptionController extends Controller
     }
 
     /**
+     * Move an option up (earlier) among the options of its own group.
+     */
+    public function moveUp(Service $service, ServiceOption $option): RedirectResponse
+    {
+        $previous = $service->options()
+            ->where('group_label', $option->group_label)
+            ->where('sort_order', '<', $option->sort_order)
+            ->orderByDesc('sort_order')
+            ->first();
+
+        if ($previous) {
+            $this->swapSortOrder($option, $previous);
+        }
+
+        return redirect()->route('admin.services.options.index', $service);
+    }
+
+    /**
+     * Move an option down (later) among the options of its own group.
+     */
+    public function moveDown(Service $service, ServiceOption $option): RedirectResponse
+    {
+        $next = $service->options()
+            ->where('group_label', $option->group_label)
+            ->where('sort_order', '>', $option->sort_order)
+            ->orderBy('sort_order')
+            ->first();
+
+        if ($next) {
+            $this->swapSortOrder($option, $next);
+        }
+
+        return redirect()->route('admin.services.options.index', $service);
+    }
+
+    /**
      * Validate the shared option fields.
      *
      * @return array<string, mixed>
@@ -90,14 +133,12 @@ class ServiceOptionController extends Controller
             'group_label' => ['required', 'string', 'max:255'],
             'value_label' => ['required', 'string', 'max:255'],
             'extra_price' => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
         ], [], [
             'group_label' => 'catégorie d\'option',
             'value_label' => 'valeur',
             'extra_price' => 'supplément',
         ]);
 
-        $data['sort_order'] = $data['sort_order'] ?? 0;
         $data['is_active'] = $request->boolean('is_active');
 
         return $data;

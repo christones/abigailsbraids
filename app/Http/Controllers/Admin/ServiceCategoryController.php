@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\HandlesSortOrder;
 use App\Http\Controllers\Controller;
 use App\Models\ServiceCategory;
 use Illuminate\Http\RedirectResponse;
@@ -11,6 +12,8 @@ use Illuminate\View\View;
 
 class ServiceCategoryController extends Controller
 {
+    use HandlesSortOrder;
+
     /**
      * List every service category for management.
      */
@@ -42,6 +45,7 @@ class ServiceCategoryController extends Controller
         $validated = $this->validated($request);
 
         $validated['slug'] = Str::slug($validated['name']);
+        $validated['sort_order'] = $this->nextSortOrder(ServiceCategory::query());
 
         ServiceCategory::create($validated);
 
@@ -83,6 +87,40 @@ class ServiceCategoryController extends Controller
     }
 
     /**
+     * Move a category up (earlier) in the display order.
+     */
+    public function moveUp(ServiceCategory $serviceCategory): RedirectResponse
+    {
+        $previous = ServiceCategory::query()
+            ->where('sort_order', '<', $serviceCategory->sort_order)
+            ->orderByDesc('sort_order')
+            ->first();
+
+        if ($previous) {
+            $this->swapSortOrder($serviceCategory, $previous);
+        }
+
+        return redirect()->route('admin.service-categories.index');
+    }
+
+    /**
+     * Move a category down (later) in the display order.
+     */
+    public function moveDown(ServiceCategory $serviceCategory): RedirectResponse
+    {
+        $next = ServiceCategory::query()
+            ->where('sort_order', '>', $serviceCategory->sort_order)
+            ->orderBy('sort_order')
+            ->first();
+
+        if ($next) {
+            $this->swapSortOrder($serviceCategory, $next);
+        }
+
+        return redirect()->route('admin.service-categories.index');
+    }
+
+    /**
      * Validate the shared category fields.
      *
      * @return array<string, mixed>
@@ -91,12 +129,10 @@ class ServiceCategoryController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
         ], [], [
             'name' => 'nom',
         ]);
 
-        $data['sort_order'] = $data['sort_order'] ?? 0;
         $data['is_active'] = $request->boolean('is_active');
 
         return $data;

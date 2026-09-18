@@ -38,7 +38,6 @@ class AdminProductTest extends TestCase
             'description' => 'Une huile nourrissante.',
             'price' => 14.90,
             'stock_quantity' => 20,
-            'sort_order' => 1,
             'is_active' => '1',
         ]);
 
@@ -67,6 +66,19 @@ class AdminProductTest extends TestCase
             'name' => 'Produit mis à jour',
             'stock_quantity' => 5,
         ]);
+    }
+
+    public function test_authenticated_user_can_reorder_products(): void
+    {
+        $user = User::factory()->create();
+        $first = Product::factory()->create(['sort_order' => 0]);
+        $second = Product::factory()->create(['sort_order' => 1]);
+
+        $response = $this->actingAs($user)->patch(route('admin.products.move-down', $first));
+
+        $response->assertRedirect(route('admin.products.index'));
+        $this->assertSame(1, $first->refresh()->sort_order);
+        $this->assertSame(0, $second->refresh()->sort_order);
     }
 
     public function test_authenticated_user_can_delete_a_product(): void

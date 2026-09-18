@@ -65,26 +65,23 @@
         </div>
     </section>
 
-    {{-- Seasonal promo: rentrée scolaire --}}
+    {{-- Promo banner --}}
     <section class="bg-brand-900 py-16 text-white">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="grid items-center gap-10 lg:grid-cols-2">
                 <div class="grid grid-cols-2 gap-4">
-                    <img src="{{ asset('images/rentreescolaire.jpg') }}" alt="Promo rentrée scolaire Abigail's Braids" class="col-span-1 rounded-2xl shadow-lg">
-                    <img src="{{ asset('images/rentreescolaire1.jpg') }}" alt="Bonne rentrée scolaire Abigail's Braids" class="col-span-1 mt-8 rounded-2xl shadow-lg">
+                    <img src="{{ asset('images/braids8.jpg') }}" alt="Réalisation Abigail's Braids" class="col-span-1 rounded-2xl shadow-lg">
+                    <img src="{{ asset('images/braids9.jpg') }}" alt="Réalisation Abigail's Braids" class="col-span-1 mt-8 rounded-2xl shadow-lg">
                 </div>
                 <div class="text-center lg:text-left">
-                    <p class="text-sm font-semibold uppercase tracking-widest text-brand-200">Offre de saison</p>
-                    <h2 class="mt-2 font-serif text-3xl font-semibold sm:text-4xl">Spécial rentrée scolaire</h2>
+                    <p class="text-sm font-semibold uppercase tracking-widest text-brand-200">Nouveau chez nous</p>
+                    <h2 class="mt-2 font-serif text-3xl font-semibold sm:text-4xl">Trouvez votre style</h2>
                     <p class="mt-4 text-white/80">
-                        2 tresses collées avec rajouts, confortables et légères, parfaites pour l'école — dans
-                        toutes les couleurs disponibles. Offrez à votre fille un look qui fait la différence.
+                        Box braids, knotless, vanilles, cornrows... explorez toutes nos prestations et réservez
+                        celle qui vous correspond, en quelques clics.
                     </p>
-                    <a
-                        href="{{ route('booking.create', ['prestation' => optional($services->firstWhere('slug', 'coiffure-enfant'))->id]) }}"
-                        class="btn-secondary mt-8 inline-flex"
-                    >
-                        Réserver ce look
+                    <a href="{{ route('services.index') }}" class="btn-secondary mt-8 inline-flex">
+                        Découvrir nos prestations
                     </a>
                 </div>
             </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Concerns\HandlesImageUploads;
+use App\Http\Controllers\Concerns\HandlesSortOrder;
 use App\Http\Controllers\Controller;
 use App\Models\GalleryImage;
 use Illuminate\Http\RedirectResponse;
@@ -11,7 +12,7 @@ use Illuminate\View\View;
 
 class GalleryController extends Controller
 {
-    use HandlesImageUploads;
+    use HandlesImageUploads, HandlesSortOrder;
 
     /**
      * List every gallery image for management.
@@ -41,7 +42,6 @@ class GalleryController extends Controller
         $validated = $request->validate([
             'image' => ['required', 'image', 'max:4096'],
             'label' => ['nullable', 'string', 'max:255'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
         ], [], [
             'image' => 'image',
             'label' => 'légende',
@@ -50,7 +50,7 @@ class GalleryController extends Controller
         GalleryImage::create([
             'image_path' => $this->storeUploadedImage($request->file('image'), 'gallery'),
             'label' => $validated['label'] ?? null,
-            'sort_order' => $validated['sort_order'] ?? 0,
+            'sort_order' => $this->nextSortOrder(GalleryImage::query()),
             'is_active' => $request->boolean('is_active', true),
         ]);
 
@@ -68,14 +68,13 @@ class GalleryController extends Controller
     }
 
     /**
-     * Update a gallery image's details (label, order, visibility, or the photo itself).
+     * Update a gallery image's details (label, visibility, or the photo itself).
      */
     public function update(Request $request, GalleryImage $galleryImage): RedirectResponse
     {
         $validated = $request->validate([
             'image' => ['nullable', 'image', 'max:4096'],
             'label' => ['nullable', 'string', 'max:255'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
         ], [], [
             'image' => 'image',
             'label' => 'légende',
@@ -83,7 +82,6 @@ class GalleryController extends Controller
 
         $data = [
             'label' => $validated['label'] ?? null,
-            'sort_order' => $validated['sort_order'] ?? 0,
             'is_active' => $request->boolean('is_active'),
         ];
 
@@ -106,5 +104,39 @@ class GalleryController extends Controller
         $galleryImage->delete();
 
         return redirect()->route('admin.gallery.index')->with('success', 'Photo supprimée.');
+    }
+
+    /**
+     * Move a gallery image up (earlier) in the display order.
+     */
+    public function moveUp(GalleryImage $galleryImage): RedirectResponse
+    {
+        $previous = GalleryImage::query()
+            ->where('sort_order', '<', $galleryImage->sort_order)
+            ->orderByDesc('sort_order')
+            ->first();
+
+        if ($previous) {
+            $this->swapSortOrder($galleryImage, $previous);
+        }
+
+        return redirect()->route('admin.gallery.index');
+    }
+
+    /**
+     * Move a gallery image down (later) in the display order.
+     */
+    public function moveDown(GalleryImage $galleryImage): RedirectResponse
+    {
+        $next = GalleryImage::query()
+            ->where('sort_order', '>', $galleryImage->sort_order)
+            ->orderBy('sort_order')
+            ->first();
+
+        if ($next) {
+            $this->swapSortOrder($galleryImage, $next);
+        }
+
+        return redirect()->route('admin.gallery.index');
     }
 }

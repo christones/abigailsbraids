@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Concerns\HandlesImageUploads;
+use App\Http\Controllers\Concerns\HandlesSortOrder;
 use App\Http\Controllers\Controller;
 use App\Models\Training;
 use Illuminate\Http\RedirectResponse;
@@ -12,7 +13,7 @@ use Illuminate\View\View;
 
 class TrainingController extends Controller
 {
-    use HandlesImageUploads;
+    use HandlesImageUploads, HandlesSortOrder;
 
     /**
      * List every training (active and inactive) for management.
@@ -46,6 +47,7 @@ class TrainingController extends Controller
         }
 
         $validated['slug'] = Str::slug($validated['name']);
+        $validated['sort_order'] = $this->nextSortOrder(Training::query());
 
         Training::create($validated);
 
@@ -93,6 +95,40 @@ class TrainingController extends Controller
     }
 
     /**
+     * Move a training up (earlier) in the display order.
+     */
+    public function moveUp(Training $training): RedirectResponse
+    {
+        $previous = Training::query()
+            ->where('sort_order', '<', $training->sort_order)
+            ->orderByDesc('sort_order')
+            ->first();
+
+        if ($previous) {
+            $this->swapSortOrder($training, $previous);
+        }
+
+        return redirect()->route('admin.trainings.index');
+    }
+
+    /**
+     * Move a training down (later) in the display order.
+     */
+    public function moveDown(Training $training): RedirectResponse
+    {
+        $next = Training::query()
+            ->where('sort_order', '>', $training->sort_order)
+            ->orderBy('sort_order')
+            ->first();
+
+        if ($next) {
+            $this->swapSortOrder($training, $next);
+        }
+
+        return redirect()->route('admin.trainings.index');
+    }
+
+    /**
      * Validate the shared training fields.
      *
      * @return array<string, mixed>
@@ -106,7 +142,6 @@ class TrainingController extends Controller
             'duration_minutes' => ['required', 'integer', 'min:15', 'max:10080'],
             'price_from' => ['required', 'numeric', 'min:0', 'max:99999.99'],
             'image' => ['nullable', 'image', 'max:4096'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
         ], [], [
             'name' => 'nom',
             'description' => 'description',
@@ -117,7 +152,6 @@ class TrainingController extends Controller
         ]);
 
         unset($data['image']);
-        $data['sort_order'] = $data['sort_order'] ?? 0;
         $data['is_active'] = $request->boolean('is_active');
 
         return $data;

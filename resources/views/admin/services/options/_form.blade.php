@@ -19,15 +19,9 @@
     <input type="text" id="value_label" name="value_label" value="{{ old('value_label', $option->value_label ?? '') }}" class="form-input mt-1" placeholder="Ex. Mi-dos, Avec rajouts, XL...">
 </div>
 
-<div class="grid gap-6 sm:grid-cols-2">
-    <div>
-        <label for="extra_price" class="form-label">Supplément (€, optionnel)</label>
-        <input type="number" id="extra_price" name="extra_price" min="0" step="0.01" value="{{ old('extra_price', $option->extra_price ?? '') }}" class="form-input mt-1">
-    </div>
-    <div>
-        <label for="sort_order" class="form-label">Ordre d'affichage</label>
-        <input type="number" id="sort_order" name="sort_order" min="0" value="{{ old('sort_order', $option->sort_order ?? 0) }}" class="form-input mt-1">
-    </div>
+<div>
+    <label for="extra_price" class="form-label">Supplément (€, optionnel)</label>
+    <input type="number" id="extra_price" name="extra_price" min="0" step="0.01" value="{{ old('extra_price', $option->extra_price ?? '') }}" class="form-input mt-1">
 </div>
 
 <label class="flex items-center gap-2 text-sm text-ink-900/80">
