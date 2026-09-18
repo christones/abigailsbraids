@@ -37,12 +37,24 @@ class AdminGalleryTest extends TestCase
         $response = $this->actingAs($user)->post(route('admin.gallery.store'), [
             'image' => UploadedFile::fake()->create('braid.jpg', 100, 'image/jpeg'),
             'label' => 'Box braids',
-            'sort_order' => 1,
             'is_active' => '1',
         ]);
 
         $response->assertRedirect(route('admin.gallery.index'));
         $this->assertDatabaseHas('gallery_images', ['label' => 'Box braids']);
+    }
+
+    public function test_authenticated_user_can_reorder_gallery_images(): void
+    {
+        $user = User::factory()->create();
+        $first = GalleryImage::factory()->create(['sort_order' => 0]);
+        $second = GalleryImage::factory()->create(['sort_order' => 1]);
+
+        $response = $this->actingAs($user)->patch(route('admin.gallery.move-down', $first));
+
+        $response->assertRedirect(route('admin.gallery.index'));
+        $this->assertSame(1, $first->refresh()->sort_order);
+        $this->assertSame(0, $second->refresh()->sort_order);
     }
 
     public function test_authenticated_user_can_update_a_gallery_image(): void
@@ -52,7 +64,6 @@ class AdminGalleryTest extends TestCase
 
         $response = $this->actingAs($user)->patch(route('admin.gallery.update', $image), [
             'label' => 'Nouvelle légende',
-            'sort_order' => 2,
             'is_active' => '1',
         ]);
 

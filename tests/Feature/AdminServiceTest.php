@@ -39,7 +39,6 @@ class AdminServiceTest extends TestCase
             'description' => 'Une belle prestation.',
             'duration_minutes' => 120,
             'price_from' => 80,
-            'sort_order' => 1,
             'is_active' => '1',
         ]);
 
@@ -48,6 +47,38 @@ class AdminServiceTest extends TestCase
             'name' => 'Tresses collées',
             'slug' => 'tresses-collees',
         ]);
+    }
+
+    public function test_authenticated_user_can_reorder_services_within_a_category(): void
+    {
+        $user = User::factory()->create();
+        $category = \App\Models\ServiceCategory::factory()->create();
+        $first = Service::factory()->create(['service_category_id' => $category->id, 'sort_order' => 0]);
+        $second = Service::factory()->create(['service_category_id' => $category->id, 'sort_order' => 1]);
+
+        $response = $this->actingAs($user)->patch(route('admin.services.move-up', $second));
+
+        $response->assertRedirect(route('admin.services.index'));
+        $this->assertSame(0, $second->refresh()->sort_order);
+        $this->assertSame(1, $first->refresh()->sort_order);
+    }
+
+    public function test_new_service_is_created_last_in_its_category(): void
+    {
+        $user = User::factory()->create();
+        $category = \App\Models\ServiceCategory::factory()->create();
+        Service::factory()->create(['service_category_id' => $category->id, 'sort_order' => 5]);
+
+        $this->actingAs($user)->post(route('admin.services.store'), [
+            'service_category_id' => $category->id,
+            'name' => 'Nouvelle prestation',
+            'duration_minutes' => 120,
+            'price_from' => 80,
+            'is_active' => '1',
+        ]);
+
+        $created = Service::firstWhere('name', 'Nouvelle prestation');
+        $this->assertSame(6, $created->sort_order);
     }
 
     public function test_authenticated_user_can_upload_a_service_image(): void

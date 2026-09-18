@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Concerns\HandlesImageUploads;
+use App\Http\Controllers\Concerns\HandlesSortOrder;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
@@ -12,7 +13,7 @@ use Illuminate\View\View;
 
 class ProductController extends Controller
 {
-    use HandlesImageUploads;
+    use HandlesImageUploads, HandlesSortOrder;
 
     /**
      * List every product (active and inactive) for management.
@@ -46,6 +47,7 @@ class ProductController extends Controller
         }
 
         $validated['slug'] = Str::slug($validated['name']);
+        $validated['sort_order'] = $this->nextSortOrder(Product::query());
 
         Product::create($validated);
 
@@ -93,6 +95,40 @@ class ProductController extends Controller
     }
 
     /**
+     * Move a product up (earlier) in the display order.
+     */
+    public function moveUp(Product $product): RedirectResponse
+    {
+        $previous = Product::query()
+            ->where('sort_order', '<', $product->sort_order)
+            ->orderByDesc('sort_order')
+            ->first();
+
+        if ($previous) {
+            $this->swapSortOrder($product, $previous);
+        }
+
+        return redirect()->route('admin.products.index');
+    }
+
+    /**
+     * Move a product down (later) in the display order.
+     */
+    public function moveDown(Product $product): RedirectResponse
+    {
+        $next = Product::query()
+            ->where('sort_order', '>', $product->sort_order)
+            ->orderBy('sort_order')
+            ->first();
+
+        if ($next) {
+            $this->swapSortOrder($product, $next);
+        }
+
+        return redirect()->route('admin.products.index');
+    }
+
+    /**
      * Validate the shared product fields.
      *
      * @return array<string, mixed>
@@ -105,7 +141,6 @@ class ProductController extends Controller
             'price' => ['required', 'numeric', 'min:0', 'max:99999.99'],
             'stock_quantity' => ['nullable', 'integer', 'min:0'],
             'image' => ['nullable', 'image', 'max:4096'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
         ], [], [
             'name' => 'nom',
             'description' => 'description',
@@ -116,7 +151,6 @@ class ProductController extends Controller
 
         unset($data['image']);
         $data['stock_quantity'] = $data['stock_quantity'] ?? 0;
-        $data['sort_order'] = $data['sort_order'] ?? 0;
         $data['is_active'] = $request->boolean('is_active');
 
         return $data;

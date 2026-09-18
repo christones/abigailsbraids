@@ -35,10 +35,22 @@
                     <div class="p-3">
                         <p class="truncate text-sm font-medium text-ink-900">{{ $image->label ?: 'Sans légende' }}</p>
                         <p class="text-xs text-ink-900/50">
-                            {{ $image->is_active ? 'Visible' : 'Masquée' }} · ordre {{ $image->sort_order }}
+                            {{ $image->is_active ? 'Visible' : 'Masquée' }}
                         </p>
                         <div class="mt-2 flex items-center justify-between">
-                            <a href="{{ route('admin.gallery.edit', $image) }}" class="text-xs font-medium text-brand-700 hover:text-brand-800">Modifier</a>
+                            <div class="flex items-center gap-1">
+                                <form method="POST" action="{{ route('admin.gallery.move-up', $image) }}">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="text-ink-900/50 hover:text-brand-700" title="Monter" aria-label="Monter">&uarr;</button>
+                                </form>
+                                <form method="POST" action="{{ route('admin.gallery.move-down', $image) }}">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="text-ink-900/50 hover:text-brand-700" title="Descendre" aria-label="Descendre">&darr;</button>
+                                </form>
+                                <a href="{{ route('admin.gallery.edit', $image) }}" class="text-xs font-medium text-brand-700 hover:text-brand-800">Modifier</a>
+                            </div>
                             <form method="POST" action="{{ route('admin.gallery.destroy', $image) }}" onsubmit="return confirm('Supprimer cette photo ?');">
                                 @csrf
                                 @method('DELETE')

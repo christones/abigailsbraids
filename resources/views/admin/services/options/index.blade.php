@@ -38,6 +38,7 @@
             <table class="min-w-full divide-y divide-ink-900/5 text-sm">
                 <thead class="bg-brand-50 text-left text-xs font-semibold uppercase tracking-wide text-ink-900/60">
                     <tr>
+                        <th class="px-4 py-3">Ordre</th>
                         <th class="px-4 py-3">Catégorie d'option</th>
                         <th class="px-4 py-3">Valeur</th>
                         <th class="px-4 py-3">Supplément</th>
@@ -48,6 +49,20 @@
                 <tbody class="divide-y divide-ink-900/5">
                     @forelse ($options as $option)
                         <tr>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-col gap-0.5">
+                                    <form method="POST" action="{{ route('admin.services.options.move-up', [$service, $option]) }}">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="text-ink-900/50 hover:text-brand-700" title="Monter" aria-label="Monter">&uarr;</button>
+                                    </form>
+                                    <form method="POST" action="{{ route('admin.services.options.move-down', [$service, $option]) }}">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="text-ink-900/50 hover:text-brand-700" title="Descendre" aria-label="Descendre">&darr;</button>
+                                    </form>
+                                </div>
+                            </td>
                             <td class="px-4 py-3 font-medium text-ink-900">{{ $option->group_label }}</td>
                             <td class="px-4 py-3 text-ink-900/70">{{ $option->value_label }}</td>
                             <td class="px-4 py-3 text-ink-900/70">
@@ -71,7 +86,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-4 py-8 text-center text-ink-900/50">Aucune option pour cette prestation.</td>
+                            <td colspan="6" class="px-4 py-8 text-center text-ink-900/50">Aucune option pour cette prestation.</td>
                         </tr>
                     @endforelse
                 </tbody>

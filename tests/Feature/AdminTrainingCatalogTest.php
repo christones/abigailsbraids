@@ -39,7 +39,6 @@ class AdminTrainingCatalogTest extends TestCase
             'level' => 'Débutant',
             'duration_minutes' => 360,
             'price_from' => 250,
-            'sort_order' => 1,
             'is_active' => '1',
         ]);
 
@@ -68,6 +67,19 @@ class AdminTrainingCatalogTest extends TestCase
             'id' => $training->id,
             'name' => 'Formation avancée',
         ]);
+    }
+
+    public function test_authenticated_user_can_reorder_trainings(): void
+    {
+        $user = User::factory()->create();
+        $first = Training::factory()->create(['sort_order' => 0]);
+        $second = Training::factory()->create(['sort_order' => 1]);
+
+        $response = $this->actingAs($user)->patch(route('admin.trainings.move-down', $first));
+
+        $response->assertRedirect(route('admin.trainings.index'));
+        $this->assertSame(1, $first->refresh()->sort_order);
+        $this->assertSame(0, $second->refresh()->sort_order);
     }
 
     public function test_authenticated_user_can_delete_a_training(): void

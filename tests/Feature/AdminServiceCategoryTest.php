@@ -36,7 +36,6 @@ class AdminServiceCategoryTest extends TestCase
 
         $response = $this->actingAs($user)->post(route('admin.service-categories.store'), [
             'name' => 'Tresses collées',
-            'sort_order' => 1,
             'is_active' => '1',
         ]);
 
@@ -45,6 +44,19 @@ class AdminServiceCategoryTest extends TestCase
             'name' => 'Tresses collées',
             'slug' => 'tresses-collees',
         ]);
+    }
+
+    public function test_authenticated_user_can_reorder_categories(): void
+    {
+        $user = User::factory()->create();
+        $first = ServiceCategory::factory()->create(['sort_order' => 0]);
+        $second = ServiceCategory::factory()->create(['sort_order' => 1]);
+
+        $response = $this->actingAs($user)->patch(route('admin.service-categories.move-down', $first));
+
+        $response->assertRedirect(route('admin.service-categories.index'));
+        $this->assertSame(1, $first->refresh()->sort_order);
+        $this->assertSame(0, $second->refresh()->sort_order);
     }
 
     public function test_authenticated_user_can_update_a_category(): void
