@@ -46,6 +46,12 @@
                                     </tr>
                                 @endforeach
                             @endif
+                            @if ($booking->estimated_price !== null)
+                                <tr>
+                                    <td style="padding:6px 0; color:#5f2c17; vertical-align:top;">Estimation</td>
+                                    <td style="padding:6px 0; font-weight:bold;">{{ number_format((float) $booking->estimated_price, 0, ',', ' ') }} €</td>
+                                </tr>
+                            @endif
                             <tr>
                                 <td style="padding:6px 0; color:#5f2c17; vertical-align:top;">Cliente</td>
                                 <td style="padding:6px 0; font-weight:bold;">{{ $booking->client_name }}</td>

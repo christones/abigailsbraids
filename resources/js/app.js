@@ -98,6 +98,31 @@ document.addEventListener('DOMContentLoaded', () => {
     if (bookingForm && window.bookingServiceOptions) {
         const serviceField = bookingForm.querySelector('#service_id');
         const optionsContainer = bookingForm.querySelector('[data-service-options]');
+        const priceBox = bookingForm.querySelector('[data-price-estimate]');
+        const priceValue = bookingForm.querySelector('[data-price-estimate-value]');
+
+        const formatPrice = (amount) => amount.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+
+        const updatePriceEstimate = () => {
+            if (!priceBox || !priceValue) return;
+
+            const basePrice = window.bookingPriceFromByService
+                ? Number(window.bookingPriceFromByService[serviceField.value])
+                : NaN;
+
+            if (!serviceField.value || Number.isNaN(basePrice)) {
+                priceBox.classList.add('hidden');
+                return;
+            }
+
+            let total = basePrice;
+            optionsContainer.querySelectorAll('input[type="radio"]:checked').forEach((radio) => {
+                total += Number(radio.dataset.optionPrice || 0);
+            });
+
+            priceValue.textContent = formatPrice(total);
+            priceBox.classList.remove('hidden');
+        };
 
         const updateGroupState = (wrapper) => {
             const checked = wrapper.querySelector('input[type="radio"]:checked');
@@ -134,6 +159,8 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (hint) {
                 hint.remove();
             }
+
+            updatePriceEstimate();
         };
 
         const renderGroup = (group) => {
@@ -158,10 +185,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 input.value = option.id;
                 input.className = 'sr-only';
                 input.dataset.optionLabel = option.label;
+                input.dataset.optionPrice = option.price || 0;
                 input.addEventListener('change', () => updateGroupState(wrapper));
 
                 label.appendChild(input);
                 label.appendChild(document.createTextNode(option.label));
+                if (option.price > 0) {
+                    const fee = document.createElement('span');
+                    fee.className = 'ml-1 text-xs opacity-75';
+                    fee.textContent = `(+${formatPrice(option.price)} €)`;
+                    label.appendChild(fee);
+                }
                 choices.appendChild(label);
             });
 
@@ -184,8 +218,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const renderOptionsForService = (serviceId) => {
             optionsContainer.innerHTML = '';
             const groups = window.bookingServiceOptions[serviceId];
-            if (!groups || groups.length === 0) return;
-            groups.forEach((group) => optionsContainer.appendChild(renderGroup(group)));
+            if (groups && groups.length > 0) {
+                groups.forEach((group) => optionsContainer.appendChild(renderGroup(group)));
+            }
+            updatePriceEstimate();
         };
 
         if (serviceField.tagName === 'SELECT') {
@@ -194,6 +230,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (serviceField.value) {
             renderOptionsForService(serviceField.value);
+        } else {
+            updatePriceEstimate();
         }
     }
 

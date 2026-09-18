@@ -38,6 +38,7 @@ class BookingController extends Controller
                 ->map(fn ($options) => $options->map(fn (ServiceOption $option) => [
                     'id' => $option->id,
                     'label' => $option->value_label,
+                    'price' => $option->extra_price !== null ? (float) $option->extra_price : 0,
                 ])->values())
                 ->map(fn ($options, $groupLabel) => [
                     'group' => $groupLabel,
@@ -48,6 +49,10 @@ class BookingController extends Controller
             return [$service->id => $groups];
         });
 
+        $priceFromByService = $services->mapWithKeys(fn (Service $service) => [
+            $service->id => (float) $service->price_from,
+        ]);
+
         $selectedServiceId = request()->integer('prestation') ?: null;
 
         return view('booking.create', [
@@ -56,6 +61,7 @@ class BookingController extends Controller
             'selectedServiceId' => $selectedServiceId,
             'preselectedService' => $selectedServiceId ? $services->firstWhere('id', $selectedServiceId) : null,
             'optionsByService' => $optionsByService,
+            'priceFromByService' => $priceFromByService,
         ]);
     }
 
@@ -74,11 +80,15 @@ class BookingController extends Controller
             $data['inspiration_photo_path'] = $this->storeUploadedImage($request->file('inspiration_photo'), 'bookings');
         }
 
-        $data['selected_options'] = $this->resolveSelectedOptions(
-            (int) $request->input('service_id'),
+        $service = Service::findOrFail((int) $request->input('service_id'));
+
+        ['snapshot' => $data['selected_options'], 'extra_total' => $extraTotal] = $this->resolveSelectedOptions(
+            $service->id,
             $request->input('option_choices', []),
             $request->input('option_other', [])
         );
+
+        $data['estimated_price'] = round((float) $service->price_from + $extraTotal, 2);
 
         $booking = Booking::create($data);
 
@@ -103,23 +113,24 @@ class BookingController extends Controller
 
     /**
      * Turn the submitted option choices into a readable snapshot, so it stays
-     * accurate even if the option catalogue changes later. Falls back to a
-     * free-text value when the client picked an "Autre..." choice.
+     * accurate even if the option catalogue changes later, and sum up any
+     * extra fees they carry. Falls back to a free-text value (with no fee)
+     * when the client picked an "Autre..." choice.
      *
      * @param  array<string, mixed>  $optionChoices
      * @param  array<string, mixed>  $optionOther
-     * @return array<int, array{group: string, value: string}>|null
+     * @return array{snapshot: array<int, array{group: string, value: string}>|null, extra_total: float}
      */
-    private function resolveSelectedOptions(int $serviceId, array $optionChoices, array $optionOther): ?array
+    private function resolveSelectedOptions(int $serviceId, array $optionChoices, array $optionOther): array
     {
         if (empty($optionChoices)) {
-            return null;
+            return ['snapshot' => null, 'extra_total' => 0.0];
         }
 
         $optionIds = array_filter(array_map('intval', $optionChoices));
 
         if (empty($optionIds)) {
-            return null;
+            return ['snapshot' => null, 'extra_total' => 0.0];
         }
 
         $options = ServiceOption::query()
@@ -129,6 +140,7 @@ class BookingController extends Controller
             ->keyBy('id');
 
         $selected = [];
+        $extraTotal = 0.0;
 
         foreach ($optionChoices as $groupKey => $optionId) {
             $option = $options->get((int) $optionId);
@@ -147,9 +159,14 @@ class BookingController extends Controller
                 'group' => $option->group_label,
                 'value' => $value,
             ];
+
+            $extraTotal += (float) ($option->extra_price ?? 0);
         }
 
-        return $selected === [] ? null : $selected;
+        return [
+            'snapshot' => $selected === [] ? null : $selected,
+            'extra_total' => $extraTotal,
+        ];
     }
 
     /**

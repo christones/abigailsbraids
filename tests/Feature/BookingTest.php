@@ -140,6 +140,61 @@ class BookingTest extends TestCase
         ], $booking->selected_options);
     }
 
+    public function test_estimated_price_matches_the_service_base_price_without_options(): void
+    {
+        $service = Service::factory()->create(['price_from' => 90]);
+
+        $this->post(route('booking.store'), [
+            'service_id' => $service->id,
+            'client_name' => 'Fatoumata Diallo',
+            'client_email' => 'fatou@example.com',
+            'client_phone' => '0600000000',
+            'preferred_date' => now()->addWeek()->toDateString(),
+            'preferred_time' => '10:30',
+        ]);
+
+        $booking = Booking::firstWhere('client_email', 'fatou@example.com');
+
+        $this->assertSame('90.00', (string) $booking->estimated_price);
+    }
+
+    public function test_estimated_price_adds_up_the_chosen_options_fees(): void
+    {
+        $service = Service::factory()->create(['price_from' => 90]);
+        $withFee = ServiceOption::factory()->for($service)->create(['group_label' => 'Longueur', 'extra_price' => 15]);
+        $withoutFee = ServiceOption::factory()->for($service)->create(['group_label' => 'Rajouts', 'extra_price' => null]);
+
+        $this->post(route('booking.store'), [
+            'service_id' => $service->id,
+            'client_name' => 'Fatoumata Diallo',
+            'client_email' => 'fatou@example.com',
+            'client_phone' => '0600000000',
+            'preferred_date' => now()->addWeek()->toDateString(),
+            'preferred_time' => '10:30',
+            'option_choices' => [
+                'Longueur' => $withFee->id,
+                'Rajouts' => $withoutFee->id,
+            ],
+        ]);
+
+        $booking = Booking::firstWhere('client_email', 'fatou@example.com');
+
+        $this->assertSame('105.00', (string) $booking->estimated_price);
+    }
+
+    public function test_booking_page_exposes_prices_for_the_live_estimate(): void
+    {
+        $service = Service::factory()->create(['price_from' => 90]);
+        $option = ServiceOption::factory()->for($service)->create(['extra_price' => 15]);
+
+        $response = $this->get(route('booking.create'));
+
+        $response->assertOk();
+        $response->assertSee('window.bookingPriceFromByService', false);
+        $response->assertSee((string) $service->id.'":90', false);
+        $response->assertSee('"price":15', false);
+    }
+
     public function test_submitting_a_booking_emails_the_salon(): void
     {
         Mail::fake();

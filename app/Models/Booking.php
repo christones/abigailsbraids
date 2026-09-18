@@ -35,6 +35,7 @@ class Booking extends Model
         'hair_photo_path',
         'inspiration_photo_path',
         'selected_options',
+        'estimated_price',
         'notes',
         'status',
     ];
@@ -49,6 +50,7 @@ class Booking extends Model
         return [
             'preferred_date' => 'date',
             'selected_options' => 'array',
+            'estimated_price' => 'decimal:2',
         ];
     }
 

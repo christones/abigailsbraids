@@ -51,6 +51,7 @@
                     <tr>
                         <th class="px-4 py-3">Cliente</th>
                         <th class="px-4 py-3">Prestation</th>
+                        <th class="px-4 py-3">Estimation</th>
                         <th class="px-4 py-3">Date &amp; heure</th>
                         <th class="px-4 py-3">Contact</th>
                         <th class="px-4 py-3">Détails</th>
@@ -63,6 +64,9 @@
                         <tr>
                             <td class="px-4 py-3 font-medium text-ink-900">{{ $booking->client_name }}</td>
                             <td class="px-4 py-3 text-ink-900/70">{{ $booking->service->name }}</td>
+                            <td class="px-4 py-3 text-ink-900/70">
+                                {{ $booking->estimated_price !== null ? number_format((float) $booking->estimated_price, 0, ',', ' ').' €' : '—' }}
+                            </td>
                             <td class="px-4 py-3 text-ink-900/70">
                                 {{ $booking->preferred_date->format('d/m/Y') }} à {{ $booking->preferred_time }}
                             </td>
@@ -119,7 +123,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-4 py-8 text-center text-ink-900/50">Aucune réservation pour le moment.</td>
+                            <td colspan="8" class="px-4 py-8 text-center text-ink-900/50">Aucune réservation pour le moment.</td>
                         </tr>
                     @endforelse
                 </tbody>
