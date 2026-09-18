@@ -28,6 +28,7 @@ class BookingFactory extends Factory
             'hair_photo_path' => null,
             'inspiration_photo_path' => null,
             'selected_options' => null,
+            'estimated_price' => null,
             'notes' => fake()->optional()->sentence(),
             'status' => Booking::STATUS_PENDING,
         ];

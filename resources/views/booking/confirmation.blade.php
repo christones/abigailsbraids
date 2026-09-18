@@ -32,10 +32,26 @@
                     <dt class="text-ink-900/50">Créneau</dt>
                     <dd class="font-medium text-ink-900">{{ $booking->preferred_time }}</dd>
                 </div>
+                @if ($booking->estimated_price !== null)
+                    <div>
+                        <dt class="text-ink-900/50">Estimation</dt>
+                        <dd class="font-medium text-ink-900">{{ number_format((float) $booking->estimated_price, 0, ',', ' ') }} €</dd>
+                    </div>
+                @endif
                 <div>
                     <dt class="text-ink-900/50">Statut</dt>
                     <dd class="font-medium text-ink-900">{{ \App\Models\Booking::statusLabels()[$booking->status] ?? $booking->status }}</dd>
                 </div>
+                @if ($booking->selected_options)
+                    <div class="col-span-2">
+                        <dt class="text-ink-900/50">Options choisies</dt>
+                        <dd class="font-medium text-ink-900">
+                            @foreach ($booking->selected_options as $selection)
+                                {{ $selection['group'] }} : {{ $selection['value'] }}@if (! $loop->last), @endif
+                            @endforeach
+                        </dd>
+                    </div>
+                @endif
                 @if ($booking->notes)
                     <div class="col-span-2">
                         <dt class="text-ink-900/50">Votre message</dt>

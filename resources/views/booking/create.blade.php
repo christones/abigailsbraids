@@ -68,6 +68,14 @@
 
                 <div data-service-options class="space-y-5"></div>
 
+                <div data-price-estimate class="hidden rounded-lg bg-brand-50 px-4 py-3 text-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="text-ink-900/70">Estimation (options incluses)</span>
+                        <span class="text-base font-semibold text-brand-700"><span data-price-estimate-value>0</span> €</span>
+                    </div>
+                    <p class="mt-1 text-xs text-ink-900/50">Estimation indicative ; le prix définitif est confirmé lors de la prise de rendez-vous.</p>
+                </div>
+
                 <div class="grid gap-6 sm:grid-cols-2">
                     <div>
                         <label for="client_name" class="form-label">Nom et prénom</label>
@@ -195,5 +203,6 @@
 
     <script>
         window.bookingServiceOptions = @json($optionsByService);
+        window.bookingPriceFromByService = @json($priceFromByService);
     </script>
 @endsection
