@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\HandlesImageUploads;
 use App\Http\Requests\StoreBookingRequest;
 use App\Mail\BookingConfirmation;
 use App\Mail\NewBookingNotification;
 use App\Models\Booking;
 use App\Models\Service;
+use App\Models\ServiceOption;
 use App\Support\BookingSlots;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class BookingController extends Controller
 {
+    use HandlesImageUploads;
+
     /**
      * Show the booking form.
      */
@@ -22,21 +27,60 @@ class BookingController extends Controller
         $services = Service::query()
             ->where('is_active', true)
             ->orderBy('sort_order')
+            ->with(['options' => function ($query) {
+                $query->where('is_active', true)->orderBy('sort_order');
+            }])
             ->get();
+
+        $optionsByService = $services->mapWithKeys(function (Service $service) {
+            $groups = $service->options
+                ->groupBy('group_label')
+                ->map(fn ($options) => $options->map(fn (ServiceOption $option) => [
+                    'id' => $option->id,
+                    'label' => $option->value_label,
+                ])->values())
+                ->map(fn ($options, $groupLabel) => [
+                    'group' => $groupLabel,
+                    'options' => $options,
+                ])
+                ->values();
+
+            return [$service->id => $groups];
+        });
+
+        $selectedServiceId = request()->integer('prestation') ?: null;
 
         return view('booking.create', [
             'services' => $services,
             'slots' => BookingSlots::all(),
-            'selectedServiceId' => request()->integer('prestation') ?: null,
+            'selectedServiceId' => $selectedServiceId,
+            'preselectedService' => $selectedServiceId ? $services->firstWhere('id', $selectedServiceId) : null,
+            'optionsByService' => $optionsByService,
         ]);
     }
 
     /**
      * Store a new booking request.
      */
-    public function store(StoreBookingRequest $request): \Illuminate\Http\RedirectResponse
+    public function store(StoreBookingRequest $request): RedirectResponse
     {
-        $booking = Booking::create($request->validated());
+        $data = $request->safe()->except(['hair_photo', 'inspiration_photo', 'option_choices', 'option_other']);
+
+        if ($request->hasFile('hair_photo')) {
+            $data['hair_photo_path'] = $this->storeUploadedImage($request->file('hair_photo'), 'bookings');
+        }
+
+        if ($request->hasFile('inspiration_photo')) {
+            $data['inspiration_photo_path'] = $this->storeUploadedImage($request->file('inspiration_photo'), 'bookings');
+        }
+
+        $data['selected_options'] = $this->resolveSelectedOptions(
+            (int) $request->input('service_id'),
+            $request->input('option_choices', []),
+            $request->input('option_other', [])
+        );
+
+        $booking = Booking::create($data);
 
         $this->sendNotifications($booking);
 
@@ -55,6 +99,57 @@ class BookingController extends Controller
         return view('booking.confirmation', [
             'booking' => $booking,
         ]);
+    }
+
+    /**
+     * Turn the submitted option choices into a readable snapshot, so it stays
+     * accurate even if the option catalogue changes later. Falls back to a
+     * free-text value when the client picked an "Autre..." choice.
+     *
+     * @param  array<string, mixed>  $optionChoices
+     * @param  array<string, mixed>  $optionOther
+     * @return array<int, array{group: string, value: string}>|null
+     */
+    private function resolveSelectedOptions(int $serviceId, array $optionChoices, array $optionOther): ?array
+    {
+        if (empty($optionChoices)) {
+            return null;
+        }
+
+        $optionIds = array_filter(array_map('intval', $optionChoices));
+
+        if (empty($optionIds)) {
+            return null;
+        }
+
+        $options = ServiceOption::query()
+            ->whereIn('id', $optionIds)
+            ->where('service_id', $serviceId)
+            ->get()
+            ->keyBy('id');
+
+        $selected = [];
+
+        foreach ($optionChoices as $groupKey => $optionId) {
+            $option = $options->get((int) $optionId);
+
+            if (! $option) {
+                continue;
+            }
+
+            $value = $option->value_label;
+
+            if (str_starts_with(mb_strtolower($value), 'autre') && filled($optionOther[$groupKey] ?? null)) {
+                $value = trim($optionOther[$groupKey]);
+            }
+
+            $selected[] = [
+                'group' => $option->group_label,
+                'value' => $value,
+            ];
+        }
+
+        return $selected === [] ? null : $selected;
     }
 
     /**

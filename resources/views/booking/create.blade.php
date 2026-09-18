@@ -29,33 +29,44 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('booking.store') }}" class="card mt-8 space-y-6 p-8">
+            <form method="POST" action="{{ route('booking.store') }}" enctype="multipart/form-data" class="card mt-8 space-y-6 p-8" data-booking-form>
                 @csrf
 
-                <div>
-                    <label for="service_id" class="form-label">Prestation souhaitée</label>
-                    <div class="relative mt-1">
-                        <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-ink-900/40">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 0 0-5.78 1.128 2.25 2.25 0 0 1-2.4 2.245 4.5 4.5 0 0 0 8.4-2.245c0-.399-.078-.78-.22-1.128Zm0 0a15.998 15.998 0 0 0 3.388-1.62m-5.043-.025a15.994 15.994 0 0 1 1.622-3.395m3.42 3.42a15.995 15.995 0 0 0 4.764-4.648l3.876-5.814a1.151 1.151 0 0 0-1.597-1.597L14.146 6.32a15.996 15.996 0 0 0-4.649 4.763m3.42 3.42a6.776 6.776 0 0 0-3.42-3.42" />
-                            </svg>
-                        </span>
-                        <select id="service_id" name="service_id" class="form-input pl-10">
-                            <option value="">-- Choisissez une prestation --</option>
-                            @foreach ($services as $service)
-                                <option
-                                    value="{{ $service->id }}"
-                                    @selected((int) old('service_id', $selectedServiceId) === $service->id)
-                                >
-                                    {{ $service->name }} — dès {{ number_format((float) $service->price_from, 0, ',', ' ') }} € ({{ $service->durationLabel() }})
-                                </option>
-                            @endforeach
-                        </select>
+                @if ($preselectedService)
+                    <div class="rounded-lg bg-brand-50 px-4 py-3 text-sm">
+                        <span class="text-ink-900/60">Prestation choisie :</span>
+                        <span class="font-semibold text-ink-900">{{ $preselectedService->name }}</span>
+                        <a href="{{ route('booking.create') }}" class="ml-2 text-xs font-medium text-brand-700 hover:text-brand-800">Changer</a>
                     </div>
-                    @error('service_id')
-                        <p class="form-error">{{ $message }}</p>
-                    @enderror
-                </div>
+                    <input type="hidden" id="service_id" name="service_id" value="{{ $preselectedService->id }}">
+                @else
+                    <div>
+                        <label for="service_id" class="form-label">Prestation souhaitée</label>
+                        <div class="relative mt-1">
+                            <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-ink-900/40">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 0 0-5.78 1.128 2.25 2.25 0 0 1-2.4 2.245 4.5 4.5 0 0 0 8.4-2.245c0-.399-.078-.78-.22-1.128Zm0 0a15.998 15.998 0 0 0 3.388-1.62m-5.043-.025a15.994 15.994 0 0 1 1.622-3.395m3.42 3.42a15.995 15.995 0 0 0 4.764-4.648l3.876-5.814a1.151 1.151 0 0 0-1.597-1.597L14.146 6.32a15.996 15.996 0 0 0-4.649 4.763m3.42 3.42a6.776 6.776 0 0 0-3.42-3.42" />
+                                </svg>
+                            </span>
+                            <select id="service_id" name="service_id" class="form-input pl-10">
+                                <option value="">-- Choisissez une prestation --</option>
+                                @foreach ($services as $service)
+                                    <option
+                                        value="{{ $service->id }}"
+                                        @selected((int) old('service_id', $selectedServiceId) === $service->id)
+                                    >
+                                        {{ $service->name }} — dès {{ number_format((float) $service->price_from, 0, ',', ' ') }} € ({{ $service->durationLabel() }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('service_id')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+                @endif
+
+                <div data-service-options class="space-y-5"></div>
 
                 <div class="grid gap-6 sm:grid-cols-2">
                     <div>
@@ -144,14 +155,18 @@
                 </div>
 
                 <div>
-                    <label for="hair_length" class="form-label">Longueur de cheveux (optionnel)</label>
-                    <select id="hair_length" name="hair_length" class="form-input mt-1">
-                        <option value="">-- Sélectionnez --</option>
-                        @foreach (['Courts', 'Mi-longs', 'Longs', 'Très longs'] as $length)
-                            <option value="{{ $length }}" @selected(old('hair_length') === $length)>{{ $length }}</option>
-                        @endforeach
-                    </select>
-                    @error('hair_length')
+                    <label for="hair_photo" class="form-label">Ajoutez une photo de vos cheveux actuellement (optionnel)</label>
+                    <p class="mt-1 text-xs text-ink-900/50">Cela permet à la coiffeuse de voir la longueur et la nature de vos cheveux avant de confirmer le rendez-vous.</p>
+                    <input type="file" id="hair_photo" name="hair_photo" accept="image/*" class="form-input mt-2">
+                    @error('hair_photo')
+                        <p class="form-error">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="inspiration_photo" class="form-label">Un modèle en tête (Pinterest, Instagram...) ? Ajoutez une photo (optionnel)</label>
+                    <input type="file" id="inspiration_photo" name="inspiration_photo" accept="image/*" class="form-input mt-2">
+                    @error('inspiration_photo')
                         <p class="form-error">{{ $message }}</p>
                     @enderror
                 </div>
@@ -177,4 +192,8 @@
             </form>
         </div>
     </section>
+
+    <script>
+        window.bookingServiceOptions = @json($optionsByService);
+    </script>
 @endsection

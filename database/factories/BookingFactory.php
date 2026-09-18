@@ -25,7 +25,9 @@ class BookingFactory extends Factory
             'client_phone' => fake()->phoneNumber(),
             'preferred_date' => fake()->dateTimeBetween('+1 day', '+3 weeks')->format('Y-m-d'),
             'preferred_time' => fake()->randomElement(['09:00', '10:30', '13:00', '14:30', '16:00']),
-            'hair_length' => fake()->randomElement(['Courts', 'Mi-longs', 'Longs', 'Très longs']),
+            'hair_photo_path' => null,
+            'inspiration_photo_path' => null,
+            'selected_options' => null,
             'notes' => fake()->optional()->sentence(),
             'status' => Booking::STATUS_PENDING,
         ];

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Concerns\HandlesImageUploads;
+use App\Http\Controllers\Concerns\HandlesImageUploads;
 use App\Http\Controllers\Controller;
 use App\Models\Training;
 use Illuminate\Http\RedirectResponse;

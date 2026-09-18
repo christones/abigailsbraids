@@ -28,7 +28,12 @@ class StoreBookingRequest extends FormRequest
             'client_phone' => ['required', 'string', 'max:30'],
             'preferred_date' => ['required', 'date', 'after_or_equal:tomorrow'],
             'preferred_time' => ['required', 'string', 'in:09:00,10:30,13:00,14:30,16:00,17:30'],
-            'hair_length' => ['nullable', 'string', 'max:100'],
+            'hair_photo' => ['nullable', 'image', 'max:4096'],
+            'inspiration_photo' => ['nullable', 'image', 'max:4096'],
+            'option_choices' => ['nullable', 'array'],
+            'option_choices.*' => ['nullable', 'integer', 'exists:service_options,id'],
+            'option_other' => ['nullable', 'array'],
+            'option_other.*' => ['nullable', 'string', 'max:255'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ];
     }
@@ -51,6 +56,8 @@ class StoreBookingRequest extends FormRequest
             'preferred_date.after_or_equal' => 'Merci de choisir une date à partir de demain.',
             'preferred_time.required' => 'Merci de choisir un créneau horaire.',
             'preferred_time.in' => 'Merci de choisir un créneau horaire proposé.',
+            'hair_photo.image' => 'Le fichier envoyé doit être une image.',
+            'inspiration_photo.image' => 'Le fichier envoyé doit être une image.',
         ];
     }
 
@@ -68,7 +75,8 @@ class StoreBookingRequest extends FormRequest
             'client_phone' => 'téléphone',
             'preferred_date' => 'date',
             'preferred_time' => 'heure',
-            'hair_length' => 'longueur de cheveux',
+            'hair_photo' => 'photo de vos cheveux',
+            'inspiration_photo' => 'photo d\'inspiration',
             'notes' => 'notes',
         ];
     }

@@ -32,7 +32,9 @@ class Booking extends Model
         'client_phone',
         'preferred_date',
         'preferred_time',
-        'hair_length',
+        'hair_photo_path',
+        'inspiration_photo_path',
+        'selected_options',
         'notes',
         'status',
     ];
@@ -46,6 +48,7 @@ class Booking extends Model
     {
         return [
             'preferred_date' => 'date',
+            'selected_options' => 'array',
         ];
     }
 

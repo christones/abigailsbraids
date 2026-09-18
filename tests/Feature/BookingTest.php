@@ -6,7 +6,9 @@ use App\Mail\BookingConfirmation;
 use App\Mail\NewBookingNotification;
 use App\Models\Booking;
 use App\Models\Service;
+use App\Models\ServiceOption;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
@@ -33,12 +35,21 @@ class BookingTest extends TestCase
         $response = $this->get(route('booking.create', ['prestation' => $chosen->id]));
 
         $response->assertOk();
+        $response->assertSee('Prestation choisie');
+        $response->assertSee($chosen->name);
+        $response->assertSee('value="'.$chosen->id.'"', false);
+        $response->assertDontSee('-- Choisissez une prestation --');
+    }
 
-        preg_match_all('/<option\s+value="(\d+)"\s*(selected)?\s*>/', $response->getContent(), $matches, PREG_SET_ORDER);
-        $selected = collect($matches)->first(fn ($match) => isset($match[2]) && $match[2] === 'selected');
+    public function test_booking_page_shows_the_dropdown_when_no_service_is_preselected(): void
+    {
+        $service = Service::factory()->create(['is_active' => true]);
 
-        $this->assertNotNull($selected, 'Expected one option to be pre-selected.');
-        $this->assertSame((string) $chosen->id, $selected[1]);
+        $response = $this->get(route('booking.create'));
+
+        $response->assertOk();
+        $response->assertSee('-- Choisissez une prestation --');
+        $response->assertDontSee('Prestation choisie');
     }
 
     public function test_a_client_can_submit_a_booking_request(): void
@@ -52,7 +63,6 @@ class BookingTest extends TestCase
             'client_phone' => '0600000000',
             'preferred_date' => now()->addWeek()->toDateString(),
             'preferred_time' => '10:30',
-            'hair_length' => 'Longs',
             'notes' => 'Je souhaite un modèle avec raie sur le côté.',
         ];
 
@@ -67,6 +77,67 @@ class BookingTest extends TestCase
         $booking = Booking::firstWhere('client_email', 'fatou@example.com');
 
         $response->assertRedirect(route('booking.confirmation', $booking));
+    }
+
+    public function test_a_client_can_upload_hair_and_inspiration_photos(): void
+    {
+        $service = Service::factory()->create();
+
+        $response = $this->post(route('booking.store'), [
+            'service_id' => $service->id,
+            'client_name' => 'Fatoumata Diallo',
+            'client_email' => 'fatou@example.com',
+            'client_phone' => '0600000000',
+            'preferred_date' => now()->addWeek()->toDateString(),
+            'preferred_time' => '10:30',
+            'hair_photo' => UploadedFile::fake()->create('cheveux.jpg', 100, 'image/jpeg'),
+            'inspiration_photo' => UploadedFile::fake()->create('pinterest.jpg', 100, 'image/jpeg'),
+        ]);
+
+        $response->assertRedirect();
+
+        $booking = Booking::firstWhere('client_email', 'fatou@example.com');
+
+        $this->assertNotNull($booking->hair_photo_path);
+        $this->assertNotNull($booking->inspiration_photo_path);
+        $this->assertFileExists(public_path($booking->hair_photo_path));
+        $this->assertFileExists(public_path($booking->inspiration_photo_path));
+    }
+
+    public function test_selected_options_are_stored_as_a_readable_snapshot(): void
+    {
+        $service = Service::factory()->create();
+        $model = ServiceOption::factory()->for($service)->create(['group_label' => 'Modèle', 'value_label' => '4 tresses']);
+        $color = ServiceOption::factory()->for($service)->create(['group_label' => 'Couleur', 'value_label' => 'Autre couleur']);
+
+        $otherService = Service::factory()->create();
+        $foreignOption = ServiceOption::factory()->for($otherService)->create();
+
+        $response = $this->post(route('booking.store'), [
+            'service_id' => $service->id,
+            'client_name' => 'Fatoumata Diallo',
+            'client_email' => 'fatou@example.com',
+            'client_phone' => '0600000000',
+            'preferred_date' => now()->addWeek()->toDateString(),
+            'preferred_time' => '10:30',
+            'option_choices' => [
+                'Modèle' => $model->id,
+                'Couleur' => $color->id,
+                'Ignoré' => $foreignOption->id,
+            ],
+            'option_other' => [
+                'Couleur' => 'Turquoise',
+            ],
+        ]);
+
+        $response->assertRedirect();
+
+        $booking = Booking::firstWhere('client_email', 'fatou@example.com');
+
+        $this->assertSame([
+            ['group' => 'Modèle', 'value' => '4 tresses'],
+            ['group' => 'Couleur', 'value' => 'Turquoise'],
+        ], $booking->selected_options);
     }
 
     public function test_submitting_a_booking_emails_the_salon(): void
@@ -114,6 +185,30 @@ class BookingTest extends TestCase
         ]);
 
         $this->assertDatabaseCount('bookings', 0);
+    }
+
+    public function test_notification_email_embeds_client_photos_and_options(): void
+    {
+        $service = Service::factory()->create();
+        $booking = Booking::factory()->for($service)->create([
+            'hair_photo_path' => 'uploads/bookings/hair-test.jpg',
+            'inspiration_photo_path' => 'uploads/bookings/inspiration-test.jpg',
+            'selected_options' => [['group' => 'Modèle', 'value' => '4 tresses']],
+        ]);
+
+        @mkdir(public_path('uploads/bookings'), 0777, true);
+        copy(public_path('images/braids8.jpg'), public_path($booking->hair_photo_path));
+        copy(public_path('images/braids8.jpg'), public_path($booking->inspiration_photo_path));
+
+        $html = (new NewBookingNotification($booking))->render();
+
+        $this->assertStringContainsString('Modèle', $html);
+        $this->assertStringContainsString('4 tresses', $html);
+        $this->assertStringContainsString('Cheveux actuels', $html);
+        $this->assertStringContainsString('Modèle souhaité', $html);
+
+        @unlink(public_path($booking->hair_photo_path));
+        @unlink(public_path($booking->inspiration_photo_path));
     }
 
     public function test_confirmation_page_shows_booking_summary(): void

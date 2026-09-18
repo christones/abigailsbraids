@@ -38,11 +38,13 @@
                                 <td style="padding:6px 0; color:#5f2c17; vertical-align:top;">Créneau</td>
                                 <td style="padding:6px 0; font-weight:bold;">{{ $booking->preferred_time }}</td>
                             </tr>
-                            @if ($booking->hair_length)
-                                <tr>
-                                    <td style="padding:6px 0; color:#5f2c17; vertical-align:top;">Longueur de cheveux</td>
-                                    <td style="padding:6px 0; font-weight:bold;">{{ $booking->hair_length }}</td>
-                                </tr>
+                            @if ($booking->selected_options)
+                                @foreach ($booking->selected_options as $selection)
+                                    <tr>
+                                        <td style="padding:6px 0; color:#5f2c17; vertical-align:top;">{{ $selection['group'] }}</td>
+                                        <td style="padding:6px 0; font-weight:bold;">{{ $selection['value'] }}</td>
+                                    </tr>
+                                @endforeach
                             @endif
                             <tr>
                                 <td style="padding:6px 0; color:#5f2c17; vertical-align:top;">Cliente</td>
@@ -68,6 +70,40 @@
             </table>
         </td>
     </tr>
+
+    @if ($booking->hair_photo_path || $booking->inspiration_photo_path)
+        {{-- Client photos --}}
+        <tr>
+            <td style="padding:0 32px 8px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        @if ($booking->hair_photo_path)
+                            <td style="padding:8px; width:50%; vertical-align:top;">
+                                <p style="margin:0 0 6px; color:#5f2c17; font-size:12px; font-weight:bold; text-transform:uppercase;">Cheveux actuels</p>
+                                <img
+                                    src="{{ $message->embed(public_path($booking->hair_photo_path)) }}"
+                                    alt="Photo des cheveux actuels de {{ $booking->client_name }}"
+                                    width="260"
+                                    style="display:block; max-width:100%; border-radius:12px;"
+                                >
+                            </td>
+                        @endif
+                        @if ($booking->inspiration_photo_path)
+                            <td style="padding:8px; width:50%; vertical-align:top;">
+                                <p style="margin:0 0 6px; color:#5f2c17; font-size:12px; font-weight:bold; text-transform:uppercase;">Modèle souhaité</p>
+                                <img
+                                    src="{{ $message->embed(public_path($booking->inspiration_photo_path)) }}"
+                                    alt="Modèle souhaité par {{ $booking->client_name }}"
+                                    width="260"
+                                    style="display:block; max-width:100%; border-radius:12px;"
+                                >
+                            </td>
+                        @endif
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    @endif
 
     {{-- CTA --}}
     <tr>
