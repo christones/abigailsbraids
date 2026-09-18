@@ -19,9 +19,15 @@
         @endif
 
         <p class="mt-6 text-sm text-ink-900/60">
-            Ajoutez ici les variantes proposées pour cette prestation : avec/sans rajouts, longueurs, tailles de
-            tresses, nombre de tresses, couleurs, etc. Chaque option appartient à une catégorie libre (ex. "Longueur")
-            et peut avoir un supplément de prix optionnel.
+            Ajoutez ici les variantes proposées pour cette prestation : modèle (ex. 2 / 4 / 6 tresses), avec/sans
+            rajouts, longueurs, tailles, couleurs, etc. Chaque option appartient à une catégorie libre (ex. "Modèle",
+            "Couleur") et s'affiche comme un choix à cocher pour la cliente au moment de la réservation.
+        </p>
+        <p class="mt-2 text-sm text-ink-900/60">
+            Deux astuces automatiques : une valeur commençant par <strong>« Autre »</strong> (ex. "Autre couleur")
+            fait apparaître un champ de précision pour la cliente. Une valeur contenant <strong>« personnalisé »</strong>
+            (ex. "Modèle personnalisé") masque les autres options et invite la cliente à utiliser les champs photo/message
+            du formulaire de réservation.
         </p>
 
         <div class="mt-6 flex justify-end">

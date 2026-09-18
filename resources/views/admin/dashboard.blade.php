@@ -53,6 +53,7 @@
                         <th class="px-4 py-3">Prestation</th>
                         <th class="px-4 py-3">Date &amp; heure</th>
                         <th class="px-4 py-3">Contact</th>
+                        <th class="px-4 py-3">Détails</th>
                         <th class="px-4 py-3">Statut</th>
                         <th class="px-4 py-3 text-right">Actions</th>
                     </tr>
@@ -68,6 +69,30 @@
                             <td class="px-4 py-3 text-ink-900/70">
                                 <div>{{ $booking->client_phone }}</div>
                                 <div class="text-xs text-ink-900/50">{{ $booking->client_email }}</div>
+                            </td>
+                            <td class="px-4 py-3">
+                                @if ($booking->selected_options)
+                                    <ul class="text-xs text-ink-900/70">
+                                        @foreach ($booking->selected_options as $selection)
+                                            <li><span class="text-ink-900/50">{{ $selection['group'] }} :</span> {{ $selection['value'] }}</li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                                <div class="mt-1 flex gap-2">
+                                    @if ($booking->hair_photo_path)
+                                        <a href="{{ asset($booking->hair_photo_path) }}" target="_blank" rel="noopener noreferrer" title="Photo des cheveux actuels">
+                                            <img src="{{ asset($booking->hair_photo_path) }}" alt="Cheveux actuels" class="h-10 w-10 rounded-lg object-cover ring-1 ring-ink-900/10">
+                                        </a>
+                                    @endif
+                                    @if ($booking->inspiration_photo_path)
+                                        <a href="{{ asset($booking->inspiration_photo_path) }}" target="_blank" rel="noopener noreferrer" title="Modèle souhaité">
+                                            <img src="{{ asset($booking->inspiration_photo_path) }}" alt="Modèle souhaité" class="h-10 w-10 rounded-lg object-cover ring-1 ring-ink-900/10">
+                                        </a>
+                                    @endif
+                                    @if (! $booking->selected_options && ! $booking->hair_photo_path && ! $booking->inspiration_photo_path)
+                                        <span class="text-xs text-ink-900/40">—</span>
+                                    @endif
+                                </div>
                             </td>
                             <td class="px-4 py-3">
                                 <form method="POST" action="{{ route('admin.bookings.update', $booking) }}">
@@ -94,7 +119,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-8 text-center text-ink-900/50">Aucune réservation pour le moment.</td>
+                            <td colspan="7" class="px-4 py-8 text-center text-ink-900/50">Aucune réservation pour le moment.</td>
                         </tr>
                     @endforelse
                 </tbody>
