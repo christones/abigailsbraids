@@ -162,14 +162,45 @@
                     @enderror
                 </div>
 
-                <div>
-                    <label for="hair_photo" class="form-label">Ajoutez une photo de vos cheveux actuellement (optionnel)</label>
+                <div data-selfie-capture>
+                    <span class="form-label">Prenez un selfie de vos cheveux actuellement (optionnel)</span>
                     <p class="mt-1 text-xs text-ink-900/50">Cela permet à la coiffeuse de voir la longueur et la nature de vos cheveux avant de confirmer le rendez-vous.</p>
-                    <input type="file" id="hair_photo" name="hair_photo" accept="image/*" capture="user" class="form-input mt-2">
+
+                    <div class="mt-2 space-y-2">
+                        <div data-selfie-camera class="hidden overflow-hidden rounded-lg bg-ink-900/10">
+                            <video data-selfie-video class="mx-auto w-full max-w-xs [transform:scaleX(-1)]" autoplay playsinline muted></video>
+                        </div>
+
+                        <div data-selfie-preview class="hidden">
+                            <img data-selfie-preview-img class="mx-auto w-full max-w-xs rounded-lg object-cover" alt="Aperçu du selfie">
+                        </div>
+
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" data-selfie-start class="btn-secondary text-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.174C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+                                </svg>
+                                Prendre un selfie
+                            </button>
+                            <button type="button" data-selfie-shoot class="btn-primary hidden text-sm">Capturer</button>
+                            <button type="button" data-selfie-retake class="btn-secondary hidden text-sm">Reprendre</button>
+                        </div>
+
+                        <p data-selfie-error class="hidden text-xs text-red-600"></p>
+
+                        <div data-selfie-fallback>
+                            <label for="hair_photo" class="text-xs font-medium text-brand-700 hover:text-brand-800">Ou choisissez une photo depuis votre appareil</label>
+                            <input type="file" id="hair_photo" name="hair_photo" accept="image/*" capture="user" class="form-input mt-1">
+                        </div>
+                    </div>
+
                     @error('hair_photo')
                         <p class="form-error">{{ $message }}</p>
                     @enderror
                 </div>
+
+                <canvas data-selfie-canvas class="hidden"></canvas>
 
                 <div>
                     <label for="inspiration_photo" class="form-label">Un modèle en tête (Pinterest, Instagram...) ? Ajoutez une photo (optionnel)</label>

@@ -267,6 +267,109 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Booking: take a selfie directly with the camera instead of only picking
+    // a file. Falls back to the plain file input (still there) if the camera
+    // is unavailable, permission is denied, or the browser doesn't support it.
+    const selfieWidget = document.querySelector('[data-selfie-capture]');
+    if (selfieWidget) {
+        const startBtn = selfieWidget.querySelector('[data-selfie-start]');
+        const shootBtn = selfieWidget.querySelector('[data-selfie-shoot]');
+        const retakeBtn = selfieWidget.querySelector('[data-selfie-retake]');
+        const cameraBox = selfieWidget.querySelector('[data-selfie-camera]');
+        const previewBox = selfieWidget.querySelector('[data-selfie-preview]');
+        const previewImg = selfieWidget.querySelector('[data-selfie-preview-img]');
+        const video = selfieWidget.querySelector('[data-selfie-video]');
+        const canvas = document.querySelector('[data-selfie-canvas]');
+        const fileInput = selfieWidget.querySelector('#hair_photo');
+        const errorEl = selfieWidget.querySelector('[data-selfie-error]');
+        let stream = null;
+
+        const stopStream = () => {
+            if (stream) {
+                stream.getTracks().forEach((track) => track.stop());
+                stream = null;
+            }
+        };
+
+        const showError = (message) => {
+            errorEl.textContent = message;
+            errorEl.classList.remove('hidden');
+        };
+
+        const startCamera = async () => {
+            errorEl.classList.add('hidden');
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                showError("La prise de photo n'est pas prise en charge par ce navigateur. Choisissez une photo ci-dessous.");
+                return;
+            }
+
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+                video.srcObject = stream;
+                cameraBox.classList.remove('hidden');
+                previewBox.classList.add('hidden');
+                startBtn.classList.add('hidden');
+                shootBtn.classList.remove('hidden');
+                retakeBtn.classList.add('hidden');
+            } catch (err) {
+                showError("Impossible d'accéder à la caméra. Choisissez une photo ci-dessous.");
+            }
+        };
+
+        startBtn.addEventListener('click', startCamera);
+
+        shootBtn.addEventListener('click', () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.save();
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+            ctx.restore();
+
+            canvas.toBlob((blob) => {
+                if (!blob) return;
+
+                const file = new File([blob], 'selfie.jpg', { type: 'image/jpeg' });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files;
+
+                previewImg.src = URL.createObjectURL(blob);
+                previewBox.classList.remove('hidden');
+                cameraBox.classList.add('hidden');
+                shootBtn.classList.add('hidden');
+                retakeBtn.classList.remove('hidden');
+
+                stopStream();
+            }, 'image/jpeg', 0.9);
+        });
+
+        retakeBtn.addEventListener('click', () => {
+            fileInput.value = '';
+            startCamera();
+        });
+
+        // Picking a file manually (the fallback) still shows a preview.
+        fileInput.addEventListener('change', () => {
+            if (!fileInput.files || !fileInput.files[0]) return;
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                previewImg.src = reader.result;
+                previewBox.classList.remove('hidden');
+                cameraBox.classList.add('hidden');
+                startBtn.classList.add('hidden');
+                shootBtn.classList.add('hidden');
+                retakeBtn.classList.remove('hidden');
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        });
+
+        window.addEventListener('beforeunload', stopStream);
+    }
+
     // Mobile navigation toggle
     const navToggle = document.querySelector('[data-nav-toggle]');
     const mobileNav = document.querySelector('[data-mobile-nav]');
