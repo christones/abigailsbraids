@@ -24,10 +24,12 @@
             "Couleur") et s'affiche comme un choix à cocher pour la cliente au moment de la réservation.
         </p>
         <p class="mt-2 text-sm text-ink-900/60">
-            Deux astuces automatiques : une valeur commençant par <strong>« Autre »</strong> (ex. "Autre couleur")
+            Quelques astuces automatiques : une valeur commençant par <strong>« Autre »</strong> (ex. "Autre couleur")
             fait apparaître un champ de précision pour la cliente. Une valeur contenant <strong>« personnalisé »</strong>
             (ex. "Modèle personnalisé") masque les autres options et invite la cliente à utiliser les champs photo/message
-            du formulaire de réservation.
+            du formulaire de réservation. Si une catégorie s'appelle <strong>« Rajouts »</strong>, la catégorie
+            <strong>« Couleur »</strong> ne s'affiche à la cliente que si elle choisit une valeur contenant « Avec »
+            (ex. "Avec rajouts").
         </p>
 
         <div class="mt-6 flex justify-end">
