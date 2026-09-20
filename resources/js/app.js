@@ -124,41 +124,73 @@ document.addEventListener('DOMContentLoaded', () => {
             priceBox.classList.remove('hidden');
         };
 
-        const updateGroupState = (wrapper) => {
-            const checked = wrapper.querySelector('input[type="radio"]:checked');
-            const otherWrapper = wrapper.querySelector('[data-other-field]');
-            const chosenLabel = checked ? checked.dataset.optionLabel || '' : '';
-            otherWrapper.classList.toggle('hidden', !/^autre/i.test(chosenLabel));
+        const clearGroupSelection = (el) => {
+            el.querySelectorAll('input[type="radio"]').forEach((radio) => { radio.checked = false; });
+            const nestedOther = el.querySelector('[data-other-field]');
+            if (nestedOther) {
+                nestedOther.classList.add('hidden');
+                nestedOther.querySelector('input').value = '';
+            }
+        };
 
-            const isCustom = /personnalis/i.test(chosenLabel);
-            optionsContainer.querySelectorAll('[data-option-group]').forEach((el) => {
-                if (el !== wrapper) {
-                    el.classList.toggle('hidden', isCustom);
-                    if (isCustom) {
-                        // Clear any previous selection in the now-irrelevant groups
-                        // so a stale choice isn't submitted alongside "personnalisé".
-                        el.querySelectorAll('input[type="radio"]').forEach((radio) => { radio.checked = false; });
-                        const nestedOther = el.querySelector('[data-other-field]');
-                        if (nestedOther) {
-                            nestedOther.classList.add('hidden');
-                            nestedOther.querySelector('input').value = '';
-                        }
-                    }
+        const checkedLabelIn = (el) => {
+            const checked = el.querySelector('input[type="radio"]:checked');
+            return checked ? checked.dataset.optionLabel || '' : '';
+        };
+
+        // Recomputed from scratch on every change so the two conditional rules
+        // below never fight over the same "hidden" class:
+        // - a "personnalisé"-style choice hides every other group for this
+        //   service and points to the photo/notes fields instead;
+        // - otherwise, a "Rajouts"-style group gates any "Couleur"-style
+        //   group: colors only make sense once rajouts are chosen.
+        const refreshVisibility = () => {
+            const groupEls = [...optionsContainer.querySelectorAll('[data-option-group]')];
+
+            let customWrapper = null;
+            groupEls.forEach((el) => {
+                if (/personnalis/i.test(checkedLabelIn(el))) {
+                    customWrapper = el;
                 }
             });
 
             let hint = optionsContainer.querySelector('[data-custom-hint]');
-            if (isCustom) {
+
+            if (customWrapper) {
+                groupEls.forEach((el) => {
+                    if (el !== customWrapper) {
+                        el.classList.add('hidden');
+                        clearGroupSelection(el);
+                    }
+                });
+
                 if (!hint) {
                     hint = document.createElement('p');
                     hint.dataset.customHint = '';
                     hint.className = 'rounded-lg bg-brand-50 px-4 py-3 text-sm text-ink-900/70';
                     hint.textContent = "Utilisez les champs « photo d'inspiration » et « message » plus bas pour décrire le modèle souhaité.";
-                    wrapper.after(hint);
+                    customWrapper.after(hint);
                 }
-            } else if (hint) {
-                hint.remove();
+            } else {
+                if (hint) hint.remove();
+
+                const rajoutsGroups = groupEls.filter((el) => /rajout/i.test(el.dataset.optionGroup || ''));
+                const wantsColor = rajoutsGroups.some((el) => /avec/i.test(checkedLabelIn(el)));
+
+                groupEls.forEach((el) => {
+                    el.classList.remove('hidden');
+
+                    if (rajoutsGroups.length > 0 && /couleur/i.test(el.dataset.optionGroup || '')) {
+                        el.classList.toggle('hidden', !wantsColor);
+                        if (!wantsColor) clearGroupSelection(el);
+                    }
+                });
             }
+
+            groupEls.forEach((el) => {
+                const otherWrapper = el.querySelector('[data-other-field]');
+                otherWrapper.classList.toggle('hidden', !/^autre/i.test(checkedLabelIn(el)));
+            });
 
             updatePriceEstimate();
         };
@@ -186,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 input.className = 'sr-only';
                 input.dataset.optionLabel = option.label;
                 input.dataset.optionPrice = option.price || 0;
-                input.addEventListener('change', () => updateGroupState(wrapper));
+                input.addEventListener('change', refreshVisibility);
 
                 label.appendChild(input);
                 label.appendChild(document.createTextNode(option.label));
@@ -221,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (groups && groups.length > 0) {
                 groups.forEach((group) => optionsContainer.appendChild(renderGroup(group)));
             }
-            updatePriceEstimate();
+            refreshVisibility();
         };
 
         if (serviceField.tagName === 'SELECT') {
