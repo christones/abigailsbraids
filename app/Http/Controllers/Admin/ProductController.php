@@ -6,6 +6,7 @@ use App\Http\Controllers\Concerns\HandlesImageUploads;
 use App\Http\Controllers\Concerns\HandlesSortOrder;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ProductCategory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -20,7 +21,7 @@ class ProductController extends Controller
      */
     public function index(): View
     {
-        $products = Product::query()->orderBy('sort_order')->get();
+        $products = Product::query()->with('category')->orderBy('sort_order')->get();
 
         return view('admin.products.index', [
             'products' => $products,
@@ -32,7 +33,9 @@ class ProductController extends Controller
      */
     public function create(): View
     {
-        return view('admin.products.create');
+        return view('admin.products.create', [
+            'categories' => $this->categoryOptions(),
+        ]);
     }
 
     /**
@@ -61,6 +64,7 @@ class ProductController extends Controller
     {
         return view('admin.products.edit', [
             'product' => $product,
+            'categories' => $this->categoryOptions(),
         ]);
     }
 
@@ -136,12 +140,14 @@ class ProductController extends Controller
     private function validated(Request $request): array
     {
         $data = $request->validate([
+            'product_category_id' => ['nullable', 'integer', 'exists:product_categories,id'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
             'price' => ['required', 'numeric', 'min:0', 'max:99999.99'],
             'stock_quantity' => ['nullable', 'integer', 'min:0'],
             'image' => ['nullable', 'image', 'max:4096'],
         ], [], [
+            'product_category_id' => 'catégorie',
             'name' => 'nom',
             'description' => 'description',
             'price' => 'prix',
@@ -150,9 +156,20 @@ class ProductController extends Controller
         ]);
 
         unset($data['image']);
+        $data['product_category_id'] = $data['product_category_id'] ?? null;
         $data['stock_quantity'] = $data['stock_quantity'] ?? 0;
         $data['is_active'] = $request->boolean('is_active');
 
         return $data;
+    }
+
+    /**
+     * Every product category, for the category dropdown of the product form.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, ProductCategory>
+     */
+    private function categoryOptions()
+    {
+        return ProductCategory::query()->orderBy('sort_order')->orderBy('id')->get();
     }
 }

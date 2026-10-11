@@ -5,6 +5,7 @@ namespace App\Models;
 use Database\Factories\ProductFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Product extends Model
 {
@@ -17,6 +18,7 @@ class Product extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'product_category_id',
         'name',
         'slug',
         'description',
@@ -40,6 +42,16 @@ class Product extends Model
             'sort_order' => 'integer',
             'is_active' => 'boolean',
         ];
+    }
+
+    /**
+     * Get the category this product belongs to (null = non classé).
+     *
+     * @return BelongsTo<ProductCategory, $this>
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(ProductCategory::class, 'product_category_id');
     }
 
     /**

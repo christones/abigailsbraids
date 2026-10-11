@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
+use App\Http\Controllers\Admin\ProductCategoryController as AdminProductCategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\ServiceCategoryController as AdminServiceCategoryController;
 use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
@@ -24,6 +25,7 @@ Route::get('/a-propos', [PageController::class, 'about'])->name('about');
 Route::get('/prestations', [ServiceController::class, 'index'])->name('services.index');
 Route::get('/galerie', [PageController::class, 'gallery'])->name('gallery');
 Route::get('/boutique', [ProductController::class, 'index'])->name('products.index');
+Route::get('/boutique/categories', [ProductController::class, 'categories'])->name('products.categories');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 
 Route::get('/reservation', [BookingController::class, 'create'])->name('booking.create');
@@ -103,6 +105,17 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::delete('/galerie/{galleryImage}', [AdminGalleryController::class, 'destroy'])->name('gallery.destroy');
     Route::patch('/galerie/{galleryImage}/monter', [AdminGalleryController::class, 'moveUp'])->name('gallery.move-up');
     Route::patch('/galerie/{galleryImage}/descendre', [AdminGalleryController::class, 'moveDown'])->name('gallery.move-down');
+
+    // Catégories de produits (boutique). Déclarées avant /boutique/{product}
+    // pour que "categories" ne soit pas pris pour un identifiant de produit.
+    Route::get('/boutique/categories', [AdminProductCategoryController::class, 'index'])->name('product-categories.index');
+    Route::get('/boutique/categories/nouvelle', [AdminProductCategoryController::class, 'create'])->name('product-categories.create');
+    Route::post('/boutique/categories', [AdminProductCategoryController::class, 'store'])->name('product-categories.store');
+    Route::get('/boutique/categories/{productCategory}/modifier', [AdminProductCategoryController::class, 'edit'])->name('product-categories.edit');
+    Route::patch('/boutique/categories/{productCategory}', [AdminProductCategoryController::class, 'update'])->name('product-categories.update');
+    Route::delete('/boutique/categories/{productCategory}', [AdminProductCategoryController::class, 'destroy'])->name('product-categories.destroy');
+    Route::patch('/boutique/categories/{productCategory}/monter', [AdminProductCategoryController::class, 'moveUp'])->name('product-categories.move-up');
+    Route::patch('/boutique/categories/{productCategory}/descendre', [AdminProductCategoryController::class, 'moveDown'])->name('product-categories.move-down');
 
     // Boutique (produits capillaires)
     Route::get('/boutique', [AdminProductController::class, 'index'])->name('products.index');

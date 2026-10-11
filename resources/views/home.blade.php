@@ -9,26 +9,40 @@
     <section class="relative">
         <div class="hero-swiper swiper relative h-[70vh] min-h-[480px] w-full overflow-hidden">
             <div class="swiper-wrapper">
-                @foreach ([
-                    ['title' => 'Sublimez vos cheveux', 'subtitle' => 'Tresses et nattes africaines réalisées avec soin, à Strasbourg', 'image' => 'images/braids18.jpg'],
-                    ['title' => 'Box Braids & Knotless', 'subtitle' => 'Un style protecteur, élégant et durable', 'image' => 'images/braids1.jpg'],
-                    ['title' => 'Pour toutes les femmes', 'subtitle' => 'Chaque texture, chaque longueur, chaque envie mérite un beau résultat', 'image' => 'images/braids22.jpg'],
-                ] as $slide)
+                @php
+                    $bookingCta = ['label' => 'Prendre rendez-vous', 'url' => route('booking.create')];
+                    $servicesCta = ['label' => 'Voir les prestations', 'url' => route('services.index')];
+
+                    $heroSlides = [
+                        ['eyebrow' => "Abigail's Braids · Strasbourg", 'title' => 'Sublimez vos cheveux', 'subtitle' => 'Tresses et nattes africaines réalisées avec soin, à Strasbourg', 'image' => 'images/braids18.jpg', 'primary' => $bookingCta, 'secondary' => $servicesCta],
+                        ['eyebrow' => "Abigail's Braids · Strasbourg", 'title' => 'Box Braids & Knotless', 'subtitle' => 'Un style protecteur, élégant et durable', 'image' => 'images/braids1.jpg', 'primary' => $bookingCta, 'secondary' => $servicesCta],
+                        ['eyebrow' => 'Formations', 'title' => 'Apprenez l\'art du tressage', 'subtitle' => 'Des formations pratiques, en petit groupe, pour maîtriser les techniques de tresses et nattes africaines — débutantes comme confirmées', 'image' => 'images/braids23.jpg', 'primary' => ['label' => 'Découvrir les formations', 'url' => route('trainings.index')], 'secondary' => ['label' => 'S\'inscrire', 'url' => route('training.create')]],
+                        ['eyebrow' => 'Boutique', 'title' => 'Vos produits capillaires', 'subtitle' => 'Huiles, soins et accessoires sélectionnés par Abigail pour prendre soin de vos cheveux et de vos tresses au quotidien', 'image' => 'images/braids3.jpg', 'primary' => ['label' => 'Visiter la boutique', 'url' => route('products.index')], 'secondary' => ['label' => 'Voir les catégories', 'url' => route('products.categories')]],
+                        ['eyebrow' => 'Boutique', 'title' => 'Prolongez la beauté de vos tresses', 'subtitle' => 'Hydratez, protégez et faites durer votre coiffure plus longtemps entre deux rendez-vous', 'image' => 'images/braids2.jpg', 'primary' => ['label' => 'Découvrir nos produits', 'url' => route('products.index')], 'secondary' => $bookingCta],
+                        ['eyebrow' => "Abigail's Braids · Strasbourg", 'title' => 'Pour toutes les femmes', 'subtitle' => 'Chaque texture, chaque longueur, chaque envie mérite un beau résultat', 'image' => 'images/braids22.jpg', 'primary' => $bookingCta, 'secondary' => $servicesCta],
+                    ];
+                @endphp
+
+                @foreach ($heroSlides as $slide)
                     <div class="swiper-slide relative flex items-center justify-center">
                         <img
                             src="{{ asset($slide['image']) }}"
                             alt=""
                             class="absolute inset-0 h-full w-full object-cover"
-                            loading="eager"
+                            loading="{{ $loop->first ? 'eager' : 'lazy' }}"
                         >
                         <div class="absolute inset-0 bg-gradient-to-t from-ink-900/80 via-ink-900/30 to-ink-900/10"></div>
                         <div class="relative z-10 mx-auto max-w-3xl px-6 text-center text-white">
-                            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-brand-200">Abigail's Braids · Strasbourg</p>
-                            <h1 class="mt-4 font-serif text-4xl font-semibold sm:text-6xl">{{ $slide['title'] }}</h1>
+                            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-brand-200">{{ $slide['eyebrow'] }}</p>
+                            @if ($loop->first)
+                                <h1 class="mt-4 font-serif text-4xl font-semibold sm:text-6xl">{{ $slide['title'] }}</h1>
+                            @else
+                                <h2 class="mt-4 font-serif text-4xl font-semibold sm:text-6xl">{{ $slide['title'] }}</h2>
+                            @endif
                             <p class="mt-4 text-lg text-white/90">{{ $slide['subtitle'] }}</p>
                             <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-                                <a href="{{ route('booking.create') }}" class="btn-primary">Prendre rendez-vous</a>
-                                <a href="{{ route('services.index') }}" class="btn-secondary bg-white/10 text-white ring-white/40 hover:bg-white/20">Voir les prestations</a>
+                                <a href="{{ $slide['primary']['url'] }}" class="btn-primary">{{ $slide['primary']['label'] }}</a>
+                                <a href="{{ $slide['secondary']['url'] }}" class="btn-secondary bg-white/10 text-white ring-white/40 hover:bg-white/20">{{ $slide['secondary']['label'] }}</a>
                             </div>
                         </div>
                     </div>
@@ -167,8 +181,36 @@
         </div>
     </section>
 
+    {{-- Shop categories (boutique) --}}
+    @if ($productCategories->isNotEmpty())
+        <section class="py-20">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="mx-auto max-w-2xl text-center">
+                    <p class="section-eyebrow">Boutique</p>
+                    <h2 class="section-title mt-2">Nos produits capillaires</h2>
+                    <p class="mt-4 text-ink-900/70">
+                        Soins, huiles et accessoires pour prendre soin de vos cheveux entre deux rendez-vous.
+                        Choisissez une catégorie pour découvrir les produits.
+                    </p>
+                </div>
+
+                <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                    @foreach ($productCategories as $category)
+                        @include('products.partials.category-card', ['category' => $category])
+                    @endforeach
+                </div>
+
+                @if ($hasMoreProductCategories)
+                    <div class="mt-10 text-center">
+                        <a href="{{ route('products.categories') }}" class="btn-primary">Voir toutes les catégories</a>
+                    </div>
+                @endif
+            </div>
+        </section>
+    @endif
+
     {{-- Gallery preview slider --}}
-    <section class="py-20">
+    <section class="{{ $productCategories->isNotEmpty() ? 'bg-white ' : '' }}py-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex flex-wrap items-end justify-between gap-4">
                 <div>

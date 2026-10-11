@@ -24,7 +24,8 @@
             </div>
         @endif
 
-        <div class="mt-8 flex justify-end">
+        <div class="mt-8 flex flex-wrap justify-end gap-3">
+            <a href="{{ route('admin.product-categories.index') }}" class="btn-secondary text-sm">Gérer les catégories</a>
             <a href="{{ route('admin.products.create') }}" class="btn-primary text-sm">Ajouter un produit</a>
         </div>
 
@@ -35,6 +36,7 @@
                         <th class="px-4 py-3">Ordre</th>
                         <th class="px-4 py-3">Photo</th>
                         <th class="px-4 py-3">Nom</th>
+                        <th class="px-4 py-3">Catégorie</th>
                         <th class="px-4 py-3">Prix</th>
                         <th class="px-4 py-3">Stock</th>
                         <th class="px-4 py-3">Statut</th>
@@ -66,6 +68,7 @@
                                 >
                             </td>
                             <td class="px-4 py-3 font-medium text-ink-900">{{ $product->name }}</td>
+                            <td class="px-4 py-3 text-ink-900/70">{{ $product->category?->name ?? 'Non classé' }}</td>
                             <td class="px-4 py-3 text-ink-900/70">{{ number_format((float) $product->price, 2, ',', ' ') }} €</td>
                             <td class="px-4 py-3 text-ink-900/70">{{ $product->stock_quantity }}</td>
                             <td class="px-4 py-3">
@@ -86,7 +89,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-4 py-8 text-center text-ink-900/50">Aucun produit pour le moment.</td>
+                            <td colspan="8" class="px-4 py-8 text-center text-ink-900/50">Aucun produit pour le moment.</td>
                         </tr>
                     @endforelse
                 </tbody>
