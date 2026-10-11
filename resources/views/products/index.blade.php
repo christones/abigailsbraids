@@ -1,17 +1,42 @@
 @extends('layouts.app')
 
-@section('title', "Boutique — Abigail's Braids")
+@section('title', ($currentCategory ? $currentCategory->name.' — ' : '')."Boutique — Abigail's Braids")
 @section('description', "Produits capillaires sélectionnés par Abigail's Braids : huiles, soins et accessoires pour prendre soin de vos cheveux entre deux rendez-vous.")
 
 @section('content')
     <section class="bg-white">
         <div class="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8">
             <p class="section-eyebrow">Boutique</p>
-            <h1 class="section-title mt-2">Nos produits capillaires</h1>
+            <h1 class="section-title mt-2">{{ $currentCategory?->name ?? 'Nos produits capillaires' }}</h1>
             <p class="mx-auto mt-4 max-w-2xl text-ink-900/70">
-                Une sélection de soins et accessoires pour prendre soin de vos cheveux et de vos coiffures au
-                quotidien. Envie d'un produit ? Contactez-nous pour le réserver.
+                @if ($currentCategory?->description)
+                    {{ $currentCategory->description }}
+                @else
+                    Une sélection de soins et accessoires pour prendre soin de vos cheveux et de vos coiffures au
+                    quotidien. Envie d'un produit ? Contactez-nous pour le réserver.
+                @endif
             </p>
+
+            @if ($categories->isNotEmpty())
+                <nav class="mt-8 flex flex-wrap justify-center gap-2" aria-label="Catégories de produits">
+                    <a
+                        href="{{ route('products.index') }}"
+                        class="rounded-full px-4 py-1.5 text-sm font-medium ring-1 {{ $currentCategory ? 'text-ink-900/70 ring-ink-900/15 hover:text-brand-700 hover:ring-brand-300' : 'bg-brand-600 text-white ring-brand-600' }}"
+                        @if (! $currentCategory) aria-current="page" @endif
+                    >
+                        Tous les produits
+                    </a>
+                    @foreach ($categories as $category)
+                        <a
+                            href="{{ route('products.index', ['categorie' => $category->slug]) }}"
+                            class="rounded-full px-4 py-1.5 text-sm font-medium ring-1 {{ $currentCategory?->is($category) ? 'bg-brand-600 text-white ring-brand-600' : 'text-ink-900/70 ring-ink-900/15 hover:text-brand-700 hover:ring-brand-300' }}"
+                            @if ($currentCategory?->is($category)) aria-current="page" @endif
+                        >
+                            {{ $category->name }}
+                        </a>
+                    @endforeach
+                </nav>
+            @endif
         </div>
     </section>
 

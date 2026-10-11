@@ -15,6 +15,21 @@
 </div>
 
 <div>
+    <label for="product_category_id" class="form-label">Catégorie</label>
+    <select id="product_category_id" name="product_category_id" class="form-input mt-1">
+        <option value="">— Non classé —</option>
+        @foreach ($categories as $categoryOption)
+            <option value="{{ $categoryOption->id }}" @selected((string) old('product_category_id', $product->product_category_id ?? '') === (string) $categoryOption->id)>
+                {{ $categoryOption->name }}{{ $categoryOption->is_active ? '' : ' (masquée)' }}
+            </option>
+        @endforeach
+    </select>
+    <p class="mt-1 text-xs text-ink-900/50">
+        Pas encore de catégorie ? <a href="{{ route('admin.product-categories.create') }}" class="font-medium text-brand-700 hover:text-brand-800">Créer une catégorie</a>.
+    </p>
+</div>
+
+<div>
     <label for="description" class="form-label">Description</label>
     <textarea id="description" name="description" rows="3" class="form-input mt-1">{{ old('description', $product->description ?? '') }}</textarea>
 </div>
