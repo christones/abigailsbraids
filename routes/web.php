@@ -29,12 +29,6 @@ Route::get('/prestations', [ServiceController::class, 'index'])->name('services.
 Route::get('/galerie', [PageController::class, 'gallery'])->name('gallery');
 Route::get('/boutique', [ProductController::class, 'index'])->name('products.index');
 Route::get('/boutique/categories', [ProductController::class, 'categories'])->name('products.categories');
-Route::get('/boutique/produits/{product:slug}/commander', [ProductOrderController::class, 'create'])->name('product-order.create');
-Route::post('/boutique/produits/{product:slug}/commander', [ProductOrderController::class, 'store'])
-    ->middleware('throttle:10,1')
-    ->name('product-order.store');
-Route::get('/boutique/commande/{productOrder:reference}', [ProductOrderController::class, 'confirmation'])
-    ->name('product-order.confirmation');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 
 // Images du dossier public/images de l'application, quand elles manquent dans public_html.

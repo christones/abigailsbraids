@@ -30,6 +30,10 @@ class ProductCategoryDisplayTest extends TestCase
 
         $this->assertStringNotContainsString('Choisissez une catégorie pour découvrir les produits', $response->getContent());
         $response->assertDontSee('Voir toutes les catégories');
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertDontSee('Catégorie vide')
+            ->assertDontSee('Voir toutes les catégories');
     }
 
     public function test_homepage_shows_the_first_four_categories_linking_to_the_shop(): void
@@ -61,6 +65,8 @@ class ProductCategoryDisplayTest extends TestCase
         $section = $this->categoriesSection($response->getContent());
         $this->assertStringContainsString('Catégorie 3', $section);
         $this->assertStringNotContainsString('Catégorie 4', $section);
+        $response->assertSee('Catégorie 3');
+        $response->assertDontSee('Catégorie 4');
         $response->assertSee('Voir toutes les catégories');
         $response->assertSee(route('products.categories'), false);
     }
