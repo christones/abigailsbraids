@@ -79,24 +79,108 @@
         </div>
     </section>
 
-    {{-- Promo banner --}}
-    <section class="bg-brand-900 py-16 text-white">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="grid items-center gap-10 lg:grid-cols-2">
+    {{-- Promo boutique : les catégories de produits enregistrées en base (admin > Boutique > Catégories) --}}
+    @php
+        $placeholderTiles = [
+            'images/boutique/placeholder-huile.svg',
+            'images/boutique/placeholder-spray.svg',
+            'images/boutique/placeholder-bonnet.svg',
+            'images/boutique/placeholder-beurre.svg',
+        ];
+
+        // Jusqu'à 4 vignettes, une par catégorie (photo de la catégorie, sinon
+        // celle de son premier produit, sinon une image tampon).
+        $promoTiles = $promoCategories->take(4)->values()->map(fn ($category, $i) => [
+            'label' => $category->name,
+            'image' => $category->coverImagePath() ?? $placeholderTiles[$i % 4],
+            'url' => $category->products_count > 0
+                ? route('products.index', ['categorie' => $category->slug])
+                : route('products.index'),
+        ]);
+
+        if ($promoTiles->isEmpty()) {
+            $promoTiles = collect($placeholderTiles)->map(fn ($image) => [
+                'label' => null,
+                'image' => $image,
+                'url' => route('products.index'),
+            ]);
+        }
+
+        $promoColumns = [$promoTiles->values()->filter(fn ($t, $i) => $i % 2 === 0), $promoTiles->values()->filter(fn ($t, $i) => $i % 2 === 1)];
+    @endphp
+    <section class="relative overflow-hidden bg-brand-900 py-20 text-white">
+        <div class="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-brand-600/30 blur-3xl"></div>
+        <div class="pointer-events-none absolute -bottom-32 right-0 h-96 w-96 rounded-full bg-gold-500/20 blur-3xl"></div>
+
+        <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="grid items-center gap-12 lg:grid-cols-2">
                 <div class="grid grid-cols-2 gap-4">
-                    <img src="{{ asset('images/braids8.jpg') }}" alt="Réalisation Abigail's Braids" class="col-span-1 rounded-2xl shadow-lg">
-                    <img src="{{ asset('images/braids9.jpg') }}" alt="Réalisation Abigail's Braids" class="col-span-1 mt-8 rounded-2xl shadow-lg">
+                    @foreach ($promoColumns as $column)
+                        <div class="flex flex-col gap-4 {{ $loop->last ? 'mt-10' : '' }}">
+                            @foreach ($column as $tile)
+                                <a href="{{ $tile['url'] }}" class="group relative block overflow-hidden rounded-2xl shadow-lg ring-1 ring-white/10">
+                                    <img
+                                        src="{{ asset($tile['image']) }}"
+                                        alt="{{ $tile['label'] ?? 'Boutique' }} — boutique Abigail's Braids"
+                                        class="aspect-[4/5] w-full object-cover transition duration-500 group-hover:scale-105"
+                                        loading="lazy"
+                                    >
+                                    @if ($tile['label'])
+                                        <div class="absolute inset-0 bg-gradient-to-t from-ink-900/80 via-ink-900/10 to-transparent"></div>
+                                        <p class="absolute inset-x-0 bottom-0 p-4 font-serif text-lg font-semibold leading-tight">{{ $tile['label'] }}</p>
+                                    @endif
+                                </a>
+                            @endforeach
+                        </div>
+                    @endforeach
                 </div>
+
                 <div class="text-center lg:text-left">
-                    <p class="text-sm font-semibold uppercase tracking-widest text-brand-200">Nouveau chez nous</p>
-                    <h2 class="mt-2 font-serif text-3xl font-semibold sm:text-4xl">Trouvez votre style</h2>
+                    <p class="text-sm font-semibold uppercase tracking-widest text-brand-200">La boutique Abigail's Braids</p>
+                    <h2 class="mt-2 font-serif text-3xl font-semibold sm:text-4xl">Tout pour sublimer vos cheveux, au même endroit</h2>
                     <p class="mt-4 text-white/80">
-                        Box braids, knotless, vanilles, cornrows... explorez toutes nos prestations et réservez
-                        celle qui vous correspond, en quelques clics.
+                        Une sélection de produits et d'accessoires choisis par Abigail, pour prendre soin de vos cheveux
+                        et de votre style entre deux rendez-vous.
                     </p>
-                    <a href="{{ route('services.index') }}" class="btn-secondary mt-8 inline-flex">
-                        Découvrir nos prestations
-                    </a>
+
+                    @if ($promoCategories->isNotEmpty())
+                        <div class="mt-6 flex flex-wrap justify-center gap-2 lg:justify-start">
+                            @foreach ($promoCategories as $category)
+                                <a
+                                    href="{{ $category->products_count > 0 ? route('products.index', ['categorie' => $category->slug]) : route('products.index') }}"
+                                    class="rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white ring-1 ring-white/20 transition hover:bg-white/20"
+                                >
+                                    {{ $category->name }}
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    <ul class="mx-auto mt-6 max-w-md space-y-3 text-left text-sm text-white/90 lg:mx-0">
+                        @foreach ([
+                            'Des produits testés et approuvés au salon',
+                            'Adaptés à toutes les textures, naturelles ou tressées',
+                            'Conseils personnalisés pour choisir le bon produit',
+                        ] as $point)
+                            <li class="flex items-start gap-3">
+                                <span class="mt-0.5 flex h-5 w-5 flex-none items-center justify-center rounded-full bg-gold-400 text-brand-900">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                    </svg>
+                                </span>
+                                {{ $point }}
+                            </li>
+                        @endforeach
+                    </ul>
+
+                    <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
+                        <a href="{{ route('products.index') }}" class="btn-primary bg-gold-400 text-brand-900 hover:bg-gold-300">
+                            Visiter la boutique
+                        </a>
+                        <a href="{{ route('products.categories') }}" class="btn-secondary bg-white/10 text-white ring-white/40 hover:bg-white/20">
+                            Voir les catégories
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -187,9 +271,9 @@
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="mx-auto max-w-2xl text-center">
                     <p class="section-eyebrow">Boutique</p>
-                    <h2 class="section-title mt-2">Nos produits capillaires</h2>
+                    <h2 class="section-title mt-2">Nos catégories de produits</h2>
                     <p class="mt-4 text-ink-900/70">
-                        Soins, huiles et accessoires pour prendre soin de vos cheveux entre deux rendez-vous.
+                        Tout ce qu’il faut pour vos cheveux et votre beauté, sélectionné par Abigail.
                         Choisissez une catégorie pour découvrir les produits.
                     </p>
                 </div>

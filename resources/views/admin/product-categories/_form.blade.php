@@ -22,6 +22,7 @@
 <div>
     <label for="image" class="form-label">Photo {{ isset($category) && $category->image_path ? '(laisser vide pour garder la photo actuelle)' : '(optionnel)' }}</label>
     @if (isset($category) && $category->image_path)
+        <img src="{{ asset($category->image_path) }}" alt="{{ $category->name }}" class="mt-2 h-24 w-32 rounded-lg object-cover">
         <img src="{{ asset($category->image_path) }}" alt="{{ $category->name }}" class="mt-2 h-24 w-24 rounded-lg object-cover">
     @endif
     <input type="file" id="image" name="image" accept="image/*" class="form-input mt-2">

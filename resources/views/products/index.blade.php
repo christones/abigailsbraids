@@ -60,12 +60,15 @@
                                 <span class="text-xs font-medium text-red-500">Rupture</span>
                             @endif
                         </div>
-                        <a
-                            href="mailto:{{ config('salon.notification_email') }}?subject={{ rawurlencode('Commande : '.$product->name) }}"
-                            class="btn-secondary mt-4 justify-center text-sm"
-                        >
-                            Commander par e-mail
-                        </a>
+                        @if ($product->inStock())
+                            <a href="{{ route('product-order.create', $product) }}" class="btn-primary mt-4 justify-center text-sm">
+                                Commander
+                            </a>
+                        @else
+                            <span class="btn-secondary mt-4 cursor-not-allowed justify-center text-sm opacity-60" aria-disabled="true">
+                                Indisponible
+                            </span>
+                        @endif
                     </div>
                 </div>
             @empty

@@ -58,6 +58,9 @@
                                 </div>
                             </td>
                             <td class="px-4 py-3">
+                                @php($thumb = $category->coverImagePath())
+                                <img
+                                    src="{{ $thumb ? asset($thumb) : 'https://placehold.co/80x80/faeadb/863f1f?text=%20' }}"
                                 <img
                                     src="{{ $category->image_path ? asset($category->image_path) : 'https://placehold.co/80x80/faeadb/863f1f?text=%20' }}"
                                     alt="{{ $category->name }}"
