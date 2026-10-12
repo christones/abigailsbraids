@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Admin\ProductCategoryController as AdminProductCategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\ProductOrderController as AdminProductOrderController;
 use App\Http\Controllers\Admin\ServiceCategoryController as AdminServiceCategoryController;
 use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Http\Controllers\Admin\ServiceOptionController as AdminServiceOptionController;
@@ -15,6 +16,8 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductOrderController;
+use App\Http\Controllers\PublicImageController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\TrainingRegistrationController;
@@ -26,7 +29,23 @@ Route::get('/prestations', [ServiceController::class, 'index'])->name('services.
 Route::get('/galerie', [PageController::class, 'gallery'])->name('gallery');
 Route::get('/boutique', [ProductController::class, 'index'])->name('products.index');
 Route::get('/boutique/categories', [ProductController::class, 'categories'])->name('products.categories');
+Route::get('/boutique/produits/{product:slug}/commander', [ProductOrderController::class, 'create'])->name('product-order.create');
+Route::post('/boutique/produits/{product:slug}/commander', [ProductOrderController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('product-order.store');
+Route::get('/boutique/commande/{productOrder:reference}', [ProductOrderController::class, 'confirmation'])
+    ->name('product-order.confirmation');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+
+// Images du dossier public/images de l'application, quand elles manquent dans public_html.
+Route::get('/images/{path}', [PublicImageController::class, 'image'])
+    ->where('path', '.*')
+    ->name('public-image');
+
+// Photos envoyées depuis l'admin, quand elles manquent dans public_html/uploads.
+Route::get('/uploads/{path}', [PublicImageController::class, 'upload'])
+    ->where('path', '.*')
+    ->name('public-upload');
 
 Route::get('/reservation', [BookingController::class, 'create'])->name('booking.create');
 Route::post('/reservation', [BookingController::class, 'store'])->name('booking.store');
@@ -116,6 +135,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::delete('/boutique/categories/{productCategory}', [AdminProductCategoryController::class, 'destroy'])->name('product-categories.destroy');
     Route::patch('/boutique/categories/{productCategory}/monter', [AdminProductCategoryController::class, 'moveUp'])->name('product-categories.move-up');
     Route::patch('/boutique/categories/{productCategory}/descendre', [AdminProductCategoryController::class, 'moveDown'])->name('product-categories.move-down');
+
+    // Commandes de la boutique
+    Route::get('/boutique/commandes', [AdminProductOrderController::class, 'index'])->name('product-orders.index');
+    Route::patch('/boutique/commandes/{productOrder}', [AdminProductOrderController::class, 'update'])->name('product-orders.update');
+    Route::delete('/boutique/commandes/{productOrder}', [AdminProductOrderController::class, 'destroy'])->name('product-orders.destroy');
 
     // Boutique (produits capillaires)
     Route::get('/boutique', [AdminProductController::class, 'index'])->name('products.index');

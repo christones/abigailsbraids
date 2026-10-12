@@ -26,10 +26,10 @@ class ProductCategoryDisplayTest extends TestCase
     {
         ProductCategory::factory()->create(['name' => 'Catégorie vide']);
 
-        $this->get(route('home'))
-            ->assertOk()
-            ->assertDontSee('Catégorie vide')
-            ->assertDontSee('Voir toutes les catégories');
+        $response = $this->get(route('home'))->assertOk();
+
+        $this->assertStringNotContainsString('Choisissez une catégorie pour découvrir les produits', $response->getContent());
+        $response->assertDontSee('Voir toutes les catégories');
     }
 
     public function test_homepage_shows_the_first_four_categories_linking_to_the_shop(): void
@@ -58,8 +58,9 @@ class ProductCategoryDisplayTest extends TestCase
 
         $response = $this->get(route('home'));
 
-        $response->assertSee('Catégorie 3');
-        $response->assertDontSee('Catégorie 4');
+        $section = $this->categoriesSection($response->getContent());
+        $this->assertStringContainsString('Catégorie 3', $section);
+        $this->assertStringNotContainsString('Catégorie 4', $section);
         $response->assertSee('Voir toutes les catégories');
         $response->assertSee(route('products.categories'), false);
     }
@@ -124,5 +125,19 @@ class ProductCategoryDisplayTest extends TestCase
             ->assertSee(route('trainings.index'), false)
             ->assertSee('Vos produits capillaires')
             ->assertSee('Visiter la boutique');
+    }
+
+    /**
+     * The HTML of the homepage "categories" section only (the promo banner
+     * further up also lists every category as a shortcut).
+     */
+    private function categoriesSection(string $html): string
+    {
+        $start = strpos($html, 'Choisissez une catégorie pour découvrir les produits');
+        $end = strpos($html, 'Nos dernières réalisations', (int) $start);
+
+        $this->assertNotFalse($start);
+
+        return substr($html, $start, $end - $start);
     }
 }

@@ -6,11 +6,13 @@
         'admin.trainings.index' => 'Formations',
         'admin.gallery.index' => 'Galerie',
         'admin.products.index' => 'Boutique',
+        'admin.product-orders.index' => 'Commandes',
     ];
 
     // Sub-pages that should keep a tab highlighted (e.g. product categories live under Boutique).
     $adminTabExtras = [
         'admin.products.index' => ['admin.products.*', 'admin.product-categories.*'],
+        'admin.product-orders.index' => ['admin.product-orders.*'],
     ];
 @endphp
 
